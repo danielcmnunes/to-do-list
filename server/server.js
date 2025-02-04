@@ -1,8 +1,11 @@
 'use strict';
 
 const Hapi = require('@hapi/hapi');
+const TodoController = require('./todo/todo')
+const DatabaseWrapper = require('./database/database')
 
 const init = async () => {
+    const db = new DatabaseWrapper();
 
     const server = Hapi.server({
         port: 3000,
@@ -14,6 +17,34 @@ const init = async () => {
         path: '/',
         handler: (request, h) => {
             return 'Hello World!';
+        }
+    });
+
+    server.route({
+        method: 'POST',
+        path: '/todos',
+        handler: async (request, h) => {
+            const result = await TodoController.post(db, request.payload);
+
+            if(result.length > 0){
+                return h.response(result[0]).code(201);
+            } else {
+                return h.response('failed').code(400);
+            }
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/todos',
+        handler: async (request, h) => {
+            const result = await TodoController.get(db, request.query);
+
+            if(result.length > 0){
+                return h.response(result).code(200);
+            } else {
+                return h.response([]).code(200);
+            }
         }
     });
 

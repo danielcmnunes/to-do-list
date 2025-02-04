@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "test",
-    "lint": "eslint ./server/server.js"
+    "test": "mocha ./tests/",
+    "lint": "eslint ./server/server.js",
+    "migrate": "knex migrate:latest --knexfile db/knexfile.js"
   },
   "author": "Daniel Nunes",
   "license": "ISC",
@@ -13,7 +14,12 @@
     "@babel/core": "^7.26.7",
     "@babel/eslint-parser": "^7.26.5",
     "@hapi/eslint-plugin": "^7.0.0",
-    "@hapi/hapi": "^21.3.12"
+    "@hapi/hapi": "^21.3.12",
+    "chai": "^5.1.2",
+    "knex": "^3.1.0",
+    "mocha": "^11.1.0",
+    "sqlite3": "^5.1.7",
+    "supertest": "^7.0.0"
   },
   "extends": [
     "eslint:recommended",

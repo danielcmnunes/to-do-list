@@ -1,0 +1,29 @@
+{
+  "name": "to-do-list",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "lint": "eslint ./server/server.js"
+  },
+  "author": "Daniel Nunes",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@babel/core": "^7.26.7",
+    "@babel/eslint-parser": "^7.26.5",
+    "@hapi/eslint-plugin": "^7.0.0",
+    "@hapi/hapi": "^21.3.12"
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@hapi/recommended"
+  ],
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@hapi/eslint-config-hapi": "^13.0.2",
+    "eslint": "^9.19.0",
+    "eslint-plugin-react": "^7.37.4",
+    "globals": "^15.14.0"
+  }
+}

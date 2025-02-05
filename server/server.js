@@ -3,6 +3,7 @@
 const Hapi = require('@hapi/hapi');
 const TodoController = require('./todo/todo')
 const DatabaseWrapper = require('./database/database')
+const JoiSchemas = require('./validation/joischemas')
 
 const init = async () => {
     const db = new DatabaseWrapper();
@@ -13,23 +14,15 @@ const init = async () => {
     });
 
     server.route({
-        method: 'GET',
-        path: '/',
-        handler: (request, h) => {
-            return 'Hello World!';
-        }
-    });
-
-    server.route({
         method: 'POST',
         path: '/todos',
-        handler: async (request, h) => {
-            const result = await TodoController.post(db, request.payload);
+        handler: async (request, h) => {            
+            const validation = await TodoController.post(db, request.payload);
 
-            if(result.length > 0){
-                return h.response(result[0]).code(201);
-            } else {
+            if(validation.error){
                 return h.response('failed').code(400);
+            } else {                    
+                return h.response(result).code(201);
             }
         }
     });
@@ -40,10 +33,10 @@ const init = async () => {
         handler: async (request, h) => {
             const result = await TodoController.get(db, request.query);
 
-            if(result.length > 0){
+            if(result.error){
+                return h.response("failed").code(400);
+            } else {                    
                 return h.response(result).code(200);
-            } else {
-                return h.response([]).code(200);
             }
         }
     });
@@ -52,12 +45,12 @@ const init = async () => {
         method: 'PATCH',
         path: '/todo/{id}',
         handler: async (request, h) => {
-            const result = await TodoController.edit(db, request.params, request.query);
+            const validation = await TodoController.edit(db, request.params, request.payload);
 
-            if(result.length > 0){
+            if(validation.error){
+                return h.response('failed').code(400);
+            } else {                    
                 return h.response(result).code(200);
-            } else {
-                return h.response([]).code(400);
             }
         }
     });
@@ -67,10 +60,7 @@ const init = async () => {
         path: '/todo/{id}',
         handler: async (request, h) => {
             const result = await TodoController.del(db, request.params);
-
-            //TODO result <- number of rows affected
-
-            if(result> 0){
+            if(result === 1){
                 return h.response([]).code(200);
             } else {
                 return h.response([]).code(404);

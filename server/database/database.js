@@ -1,24 +1,40 @@
 const knex = require('knex');
 
 class DatabaseWrapper {
-    constructor(){        
+    constructor(){
         const knexConfig = require('../../db/knexfile');
-        console.log(`knex configuration type: ${process.env.NODE_ENV}`);
-        this.db = knex(knexConfig[process.env.NODE_ENV]);
+        this.db = knex(knexConfig[process.env.NODE_ENV]);        
+        this.formatted_response = ['id', 'state', 'description', 'createdAt', 'completedAt'];
     }
 
-    async add(_description){
-        try {            
+    async add(validatedFields){
+        const description = validatedFields.description;
+        try {
             const result = await this.db('items').insert({ 
                 state: 'INCOMPLETE',
-                description: _description, 
+                description: description, 
                 createdAt: this.db.fn.now(),
                 completedAt: null
-            });
-            return result;
-        } catch (error) {
-            console.error(error);
-            return [];
+            }, this.formatted_response);
+
+            if(result.length === 1){
+                try {
+                    //convert to ISO8601 format
+                    const formatted_datetime = new Date(result[0].createdAt).toISOString();
+                    result[0].createdAt = formatted_datetime;
+
+                    return result[0];
+                } catch (err) {
+                    console.error(err);
+                    return undefined;
+                }
+
+            } else {
+                return undefined;
+            }
+        } catch (err) {
+            console.error(err);
+            return undefined;
         }
     }
 
@@ -31,14 +47,17 @@ class DatabaseWrapper {
         };
     }
 
-    async get(state, field){
+    async get(validatedFields){
+        const state = validatedFields.filter;
+        const field_name = validatedFields.orderBy;
+
         //TODO: hide incompleted when order by completed_at?
         try {
             if(state === 'ALL'){
-                const items = await this.db.select('*').from('items').orderBy(field);
+                const items = await this.db.select('*').from('items').orderBy(field_name);
                 return items; 
             } else {
-                const items = await this.db.select('*').from('items').where('state', state).orderBy(field);
+                const items = await this.db.select('*').from('items').where('state', state).orderBy(field_name);
                 return items;
             }
         } catch (err) {
@@ -48,15 +67,13 @@ class DatabaseWrapper {
     }
 
     async edit(id, state, description){
-        const formatted_response = ['id', 'state', 'description', 'createdAt', 'completedAt'];
-
         const update_data = {};
+
         if(state){
             if(state === 'COMPLETE'){
                 update_data.state = state;
                 update_data.completedAt = this.db.fn.now();
             } else {
-                //will never be here though 
                 update_data.state = state;
                 update_data.completedAt = null;
             }
@@ -66,11 +83,9 @@ class DatabaseWrapper {
             update_data.description = description;
         }
 
-        console.log(update_data)
-
         try {
-            const edited = await this.db('items').where({id: id}).update(update_data, formatted_response);
-            return edited
+            const result = await this.db('items').where({id: id}).update(update_data, this.formatted_response);
+            return result[0]
         } catch (err) {
             console.error(err);
             return []

@@ -1,75 +1,75 @@
+const Joi = require('joi');
+
+const JoiSchemas = require('../validation/joischemas')
+
 class Todo {}
 
-Todo.sanitizeFilter = function(filter){
-    switch(filter){
-        case 'ALL': return 'ALL';
-        case 'COMPLETE': return 'COMPLETE';
-        case 'INCOMPLETE': return 'INCOMPLETE';
-        default:
-            return 'ALL';
-    }       
-}
-
-Todo.sanitizeOrderBy = function(orderBy){
-    switch(orderBy){
-        case 'DESCRIPTION': return 'description';
-        case 'CREATED_AT': return 'createdAt';
-        case 'COMPLETED_AT': return 'description';
-        case 'DESCRIPTION': return 'description';
-        default:
-            return 'createdAt'; 
-    }       
-}
-
 Todo.get = async function(database, payload){
-    const state = Todo.sanitizeFilter(payload.filter);
-    const field = Todo.sanitizeOrderBy(payload.orderBy);  
+    const request_schema = JoiSchemas.getRequest();
+    const validation = request_schema.validate(payload);
 
-    const get_result = await database.get(state, field);
-    return get_result;
+    if(validation.error){
+        return validation;
+    } 
+
+    const result = await database.get(validation.value);
+
+    const response_schema = JoiSchemas.getResponse();
+    const response_validation = response_schema.validate(result);
+    return response_validation;
 };
 
 Todo.post = async function(database, payload){
-    const add_result = await database.add(payload.description);
+    const request_schema = JoiSchemas.postRequest();
+    const validation = request_schema.validate(payload);
 
-    if(add_result.length > 0){
-        const get_result = await database.getById(add_result[0]);
-        return get_result;
-    } else {
-        return [];
+    if(validation.error){
+        return validation;
     }
+
+    const result = database.add(validation.value);
+
+    const response_schema = JoiSchemas.getResponse();
+    const response_validation = response_schema.validate(result);
+    return response_validation;
 };
 
-Todo.edit = async function(database, params, payload){
-    const id = params.id;
-    const get_result = await database.getById(id);
+Todo.edit = async function(database, parameters, payload){
+    const id_schema = JoiSchemas.patchRequestId();
+    const id_validation = id_schema.validate(parameters);
 
-    if(get_result.length > 0){
-        const row = get_result[0];
-
-        if(row.completedAt !== null){
-            return 400;
-        }
-
-        const edit_result = await database.edit(id, payload.state, payload.description);
-
-        if(edit_result.length > 0){
-            const get_result = await database.getById(id);
-            return get_result;
-        } else {
-            return [];
-        }
-
-    } else {
-        return 404;
+    if(id_validation.error){
+        return id_validation;
     }
+
+    const payload_schema = JoiSchemas.patchRequestPayload();
+    const payload_validation = payload_schema.validate(payload);
+
+    if(payload_validation.error){
+        return payload_validation;
+    } 
+
+    const id = id_validation.value.id;
+    const state = payload_validation.value.state;
+    const description = payload_validation.value.description;
+    
+    const result = database.edit(id, state, description);
+
+    const response_schema = JoiSchemas.patchResponse();
+    const response_validation = response_schema.validate(result);
+    return response_validation;
 };
 
 Todo.del = async function(database, params){
-    const id = params.id;
+    const id_schema = JoiSchemas.patchRequestId();
+    const id_validation = id_schema.validate(params);
 
-    const delete_result = await database.del(id);
-    return delete_result;
+    if(id_validation.error){
+        return id_validation;
+    }
+
+    const result = await database.del(id);
+    return result;
 }
 
 module.exports = Todo

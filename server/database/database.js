@@ -47,6 +47,35 @@ class DatabaseWrapper {
         }
     }
 
+    async edit(id, state, description){
+        const formatted_response = ['id', 'state', 'description', 'createdAt', 'completedAt'];
+
+        const update_data = {};
+        if(state){
+            if(state === 'COMPLETE'){
+                update_data.state = state;
+                update_data.completedAt = this.db.fn.now();
+            } else {
+                //will never be here though 
+                update_data.state = state;
+                update_data.completedAt = null;
+            }
+        }
+
+        if(description){
+            update_data.description = description;
+        }
+
+        console.log(update_data)
+
+        try {
+            const edited = await this.db('items').where({id: id}).update(update_data, formatted_response);
+            return edited
+        } catch (err) {
+            console.error(err);
+            return []
+        }
+    }
 }
 
 module.exports = DatabaseWrapper

@@ -8,8 +8,8 @@ exports.up = function(knex) {
             table.increments('id');
             table.enu('state', ['INCOMPLETE', 'COMPLETE']);
             table.string('description');
-            table.timestamp('createdAt').defaultTo(null);
-            table.timestamp('completedAt').defaultTo(null);
+            table.datetime('createdAt', options={useTz: true, precision: 3}).defaultTo(null);
+            table.timestamp('completedAt', options={useTz: true, precision: 3}).defaultTo(null);
         });
 };
 

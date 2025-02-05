@@ -48,6 +48,20 @@ const init = async () => {
         }
     });
 
+    server.route({
+        method: 'PATCH',
+        path: '/todo/{id}',
+        handler: async (request, h) => {
+            const result = await TodoController.edit(db, request.params, request.query);
+
+            if(result.length > 0){
+                return h.response(result).code(200);
+            } else {
+                return h.response([]).code(400);
+            }
+        }
+    });
+
     await server.start();
     console.log('Server running on %s', server.info.uri);
 };

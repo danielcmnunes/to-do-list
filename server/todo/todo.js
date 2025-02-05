@@ -40,5 +40,43 @@ Todo.post = async function(database, payload){
     }
 };
 
+Todo.edit = async function(database, params, payload){
+    const id = params.id;
+    const get_result = await database.getById(id);
+
+    if(get_result.length > 0){
+        const row = get_result[0];
+
+        if(row.completedAt !== null){
+            return 400;
+        }
+
+        const edit_result = await database.edit(id, payload.state, payload.description);
+
+        if(edit_result.length > 0){
+            const get_result = await database.getById(id);
+            return get_result;
+        } else {
+            return [];
+        }
+
+    } else {
+        return 404;
+    }
+
+    //TODO check if exists first, return 404
+
+    //TODO check if complete, return 400 if so
+
+    const edit_result = await database.edit(params.id, payload.state, payload.description);
+
+    if(edit_result.length > 0){
+        const get_result = await database.getById(add_result[0]);
+        return get_result;
+    } else {
+        return [];
+    }
+};
+
 
 module.exports = Todo

@@ -63,20 +63,13 @@ Todo.edit = async function(database, params, payload){
     } else {
         return 404;
     }
-
-    //TODO check if exists first, return 404
-
-    //TODO check if complete, return 400 if so
-
-    const edit_result = await database.edit(params.id, payload.state, payload.description);
-
-    if(edit_result.length > 0){
-        const get_result = await database.getById(add_result[0]);
-        return get_result;
-    } else {
-        return [];
-    }
 };
 
+Todo.del = async function(database, params){
+    const id = params.id;
+
+    const delete_result = await database.del(id);
+    return delete_result;
+}
 
 module.exports = Todo

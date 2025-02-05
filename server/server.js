@@ -62,6 +62,22 @@ const init = async () => {
         }
     });
 
+    server.route({
+        method: 'DELETE',
+        path: '/todo/{id}',
+        handler: async (request, h) => {
+            const result = await TodoController.del(db, request.params);
+
+            //TODO result <- number of rows affected
+
+            if(result> 0){
+                return h.response([]).code(200);
+            } else {
+                return h.response([]).code(404);
+            }
+        }
+    });
+
     await server.start();
     console.log('Server running on %s', server.info.uri);
 };

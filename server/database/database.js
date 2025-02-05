@@ -76,6 +76,17 @@ class DatabaseWrapper {
             return []
         }
     }
+    
+    async del(id){
+        try {
+            const deleted = await this.db('items').where('id', id).del();
+            return deleted;
+        } catch (err) {
+            console.error(err);
+            return []
+        }
+    }
+
 }
 
 module.exports = DatabaseWrapper

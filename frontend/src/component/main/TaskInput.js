@@ -7,8 +7,6 @@ function TaskInput({onSubmitTask}) {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        console.log(`will send [${textInput}]`);
-
         try {
             const response = await fetch("http://localhost:3001/todos", {
                 method : 'POST',
@@ -17,10 +15,11 @@ function TaskInput({onSubmitTask}) {
                     'description': textInput
                 })
             });
-    
+            
             const data = await response.json();
-
-            console.log(`TODO: handle server response data [${data}]`);
+            
+            console.log("TODO: implement feedback behavior");
+            
         } catch(error){
             console.log("could not add task");
             console.log(error);
@@ -28,24 +27,26 @@ function TaskInput({onSubmitTask}) {
     };
 
     return (
-        <Form onSubmit={handleSubmit}>
-            <Row>
-                <Col>
-                    <Form.Group controlId='textInput'>
-                        <Form.Control required type="text" 
-                            placeholder="Write new task here..."
-                            value={textInput} 
-                            onChange={(e) => setTextInput(e.target.value)}    
-                        />
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Button variant="primary" type="submit">
-                        Create
-                    </Button>
-                </Col>
-            </Row>
-        </Form>
+        <Container className='m-3'>
+            <Form onSubmit={handleSubmit}>
+                <Row>
+                    <Col lg={9}>
+                        <Form.Group controlId='textInput'>
+                            <Form.Control required type="text" 
+                                placeholder="Write new task here..."
+                                value={textInput} 
+                                onChange={(e) => setTextInput(e.target.value)}    
+                            />
+                        </Form.Group>
+                    </Col>
+                    <Col lg={3}>
+                        <Button variant="primary" type="submit">
+                            Create
+                        </Button>
+                    </Col>
+                </Row>
+            </Form>
+        </Container>
     );
 }
 

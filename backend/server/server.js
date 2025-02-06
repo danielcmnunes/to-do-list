@@ -21,7 +21,12 @@ const init = async () => {
     server.route({
         method: 'POST',
         path: '/todos',
-        handler: async (request, h) => {            
+        handler: async (request, h) => {  
+            try {
+                console.log(`received POST /todos: ${JSON.stringify(request.payload)}`);
+            } catch (error) {
+                console.log("poof, could not print received request");
+            }
             const result = await TodoController.post(db, request.payload);
 
             if(result.error){
@@ -36,6 +41,12 @@ const init = async () => {
         method: 'GET',
         path: '/todos',
         handler: async (request, h) => {
+            try {
+                console.log(`received GET /todos: ${JSON.stringify(request.query)}`);
+            } catch (error) {
+                console.log("poof, could not print received request");
+            }
+
             const result = await TodoController.get(db, request.query);
 
             if(result.error){
@@ -50,6 +61,12 @@ const init = async () => {
         method: 'PATCH',
         path: '/todo/{id}',
         handler: async (request, h) => {
+            try {
+                console.log(`received PATCH /todo/${JSON.stringify(request.params)} | ${JSON.stringify(request.payload)}`);
+            } catch (error) {
+                console.log("poof, could not print received request");
+            }
+
             const result = await TodoController.edit(db, request.params, request.payload);
 
             if(result.error){
@@ -64,11 +81,17 @@ const init = async () => {
         method: 'DELETE',
         path: '/todo/{id}',
         handler: async (request, h) => {
+            try {
+                console.log(`received DELETE /todo/${JSON.stringify(request.params)}`);
+            } catch (error) {
+                console.log("poof, could not print received request");
+            }
+
             const result = await TodoController.del(db, request.params);
             if(result === 1){
-                return h.response([]).code(200);
+                return h.response().code(200);
             } else {
-                return h.response([]).code(404);
+                return h.response().code(404);
             }
         }
     });

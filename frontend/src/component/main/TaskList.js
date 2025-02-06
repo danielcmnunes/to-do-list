@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col, Button, ButtonGroup, Form, InputGroup } from 'react-bootstrap';
 import TaskItem from './TaskItem';
+import { TodoListContext } from '../TodoListContext.js';
 
 function TaskList() {
-    const [listData, setListData] = useState([]);
+    const {items, setContextList} = useContext(TodoListContext);
     
     useEffect(() => {
-        console.log(`asking list`);
-
+        console.log(`asking list...`);
         async function fetchData(){
             try {
                 const response = await fetch("http://localhost:3001/todos", {
@@ -16,24 +16,25 @@ function TaskList() {
                 });
         
                 const data = await response.json();
-                setListData(data);
 
-                console.log(data);
-
+                setContextList(data);
             } catch(error){
-                console.log("could not add task");
+                console.log("could not fetch tasks");
                 console.log(error);
             }
         }
         fetchData();
-    }, []);
+    }, [setContextList]);
   
     return (
         <Container> 
             {
-                listData.map(item => {
-                    return <TaskItem key={item.id} state={item.state} description={item.description}/>
-                })
+                items && items.length > 0 ?
+                items.map(item => {
+                    return <TaskItem key={item.id} id={item.id} state={item.state} description={item.description}/>
+                }) 
+                : 
+                <div>Loading...</div>
             }
         </Container>
     );

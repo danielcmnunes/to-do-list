@@ -88,7 +88,7 @@ class DatabaseWrapper {
             const result = await this.db('items').where({id: id}).update(update_data, this.formatted_response);
             return result[0]
         } catch (err) {
-            console.error(err);
+            console.log(err);
             return []
         }
     }

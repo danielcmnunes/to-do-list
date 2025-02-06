@@ -14,19 +14,21 @@ function App() {
 	});
 
 	return (
-		<LoginContext.Provider value={{loggedIn, setLoggedIn}}>
-			<div className="App">
-				{ !loggedIn ?
-				<>
-					<LoginScreen />
-				</>
-				:
-				<>
-					<MainScreen/>
-				</>
-				}
-			</div>
-		</LoginContext.Provider>
+		<div className="App">
+		<Container>
+			<LoginContext.Provider value={{loggedIn, setLoggedIn}}>
+					{ !loggedIn ?
+					<>
+						<LoginScreen />
+					</>
+					:
+					<>
+						<MainScreen/>
+					</>
+					}
+			</LoginContext.Provider>
+		</Container>
+		</div>
 	);
 }
 

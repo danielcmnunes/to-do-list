@@ -27,9 +27,9 @@ Todo.post = async function(database, payload){
         return validation;
     }
 
-    const result = database.add(validation.value);
+    const result = await database.add(validation.value);
 
-    const response_schema = JoiSchemas.getResponse();
+    const response_schema = JoiSchemas.postResponse();
     const response_validation = response_schema.validate(result);
     return response_validation;
 };
@@ -53,7 +53,7 @@ Todo.edit = async function(database, parameters, payload){
     const state = payload_validation.value.state;
     const description = payload_validation.value.description;
     
-    const result = database.edit(id, state, description);
+    const result = await database.edit(id, state, description);
 
     const response_schema = JoiSchemas.patchResponse();
     const response_validation = response_schema.validate(result);
@@ -68,7 +68,7 @@ Todo.del = async function(database, params){
         return id_validation;
     }
 
-    const result = await database.del(id);
+    const result = await database.del(params.id);
     return result;
 }
 

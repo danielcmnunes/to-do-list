@@ -3,14 +3,18 @@ import { Container, Row, Col, Button, ButtonGroup, Form } from 'react-bootstrap'
 import {TodoListContext} from '../TodoListContext.js';
 
 function TaskItem({id, state, description}) {
+    const {items, setContextList} = useContext(TodoListContext);
+
     const [_id, setId] = useState(id);
+
     const [isComplete, setComplete] = useState(state);
+
     const [_description, setDescription] = useState(description);
     const [descriptionInput, setDescriptionInput] = useState(description);
+
     const [isEditing, setEditing] = useState(false);
     const [descriptionStyle, setDescriptionStyle] = useState({textDecorationLine: 'none'});
     
-    const {items, setContextList} = useContext(TodoListContext);
 
     useEffect( () => {
         const decorationValue = isComplete === 'COMPLETE' ? "line-through" : "none";
@@ -43,13 +47,26 @@ function TaskItem({id, state, description}) {
                 const data = await response.json();
                 console.log(data);
 
-
-                setComplete(data.state === 'COMPLETE');
+                //update context
+                const newItems = items.map(item => {
+                    if(item.id === _id){
+                        return {
+                            ...item,
+                            description: descriptionInput
+                        }
+                    } else {
+                        return item;
+                    }
+                });
+                setContextList(newItems);
                 setDescription(data.description);
+
+                console.log(items);
 
             } catch(error){
                 console.log("could not update task");
                 console.log(error);
+                setDescriptionInput(_description);
             }
         }
         sendUpdate();
@@ -67,6 +84,17 @@ function TaskItem({id, state, description}) {
 
                 console.log(`received delete`, data);
 
+                if(response.status === 200){
+                    //update context
+                    const newItems = items.filter(item => item.id !== _id);
+                    setContextList(newItems);
+                    
+                    console.log(`TODO: deleted; implement feedback behavior`);    
+                } else if(response.status === 404){
+                    console.log(`TODO: not found; implement feedback behavior`);    
+                } else {
+                    console.log("TODO: failed; implement feedback behavior");
+                }
             } catch(error){
                 console.log("could not delete task");
                 console.log(error);
@@ -93,8 +121,21 @@ function TaskItem({id, state, description}) {
 
                 console.log(`received update`, data);
 
+                //update context
+                const newItems = items.map(item => {
+                    if(item.id === _id){
+                        return {
+                            ...item,
+                            state: isComplete
+                        }
+                    } else {
+                        return item;
+                    }
+                });
+                setContextList(newItems);
+
                 setComplete(data.state);
-                setDescription(data.description);
+                console.log(items);
 
             } catch(error){
                 console.log("could not update task");
@@ -109,7 +150,7 @@ function TaskItem({id, state, description}) {
             <Col xs={2} lg={1}>
                 <input type="checkbox" checked={isComplete === 'COMPLETE'} onChange={handleCheckboxClick}></input>
             </Col>
-            <Col xs={5} lg={9}>
+            <Col xs={6} lg={9}>
                 {
                     isEditing ?
                     <>
@@ -127,17 +168,25 @@ function TaskItem({id, state, description}) {
                 }
                               
             </Col>
-            <Col xs={5} lg={2}>
+            <Col xs={4} lg={2}>
                 {
                     isEditing ?
                     <>                        
-                        <Button className='m-1' onClick={() => {saveChanges()}}>Save</Button>
-                        <Button className='m-1' onClick={() => {discardChanges()}}>Discard</Button>
+                        <Button className='m-1' onClick={() => {saveChanges()}}>
+                            <i className="bi bi-floppy"></i>
+                        </Button>
+                        <Button className='m-1' onClick={() => {discardChanges()}}>
+                            <i className="bi bi-x"></i>
+                        </Button>
                     </>
                     :
                     <>
-                        <Button className='m-1' onClick={() => {enableEditing()}}>Edit</Button>
-                        <Button className='m-1' onClick={() => {deleteItem()}}>Delete</Button>
+                        <Button className='m-1' onClick={() => {enableEditing()}}>
+                            <i className="bi bi-pencil-square"></i>
+                        </Button>
+                        <Button className='m-1' onClick={() => {deleteItem()}}>
+                            <i className="bi bi-trash"></i>
+                        </Button>
                     </>
                 }
             </Col>

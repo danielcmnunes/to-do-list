@@ -89,9 +89,9 @@ const init = async () => {
 
             const result = await TodoController.del(db, request.params);
             if(result === 1){
-                return h.response().code(200);
+                return h.response([]).code(200);
             } else {
-                return h.response().code(404);
+                return h.response([]).code(404);
             }
         }
     });

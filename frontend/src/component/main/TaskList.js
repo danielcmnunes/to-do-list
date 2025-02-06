@@ -2,8 +2,11 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col, Button, ButtonGroup, Form, InputGroup } from 'react-bootstrap';
 import TaskItem from './TaskItem';
 import { TodoListContext } from '../TodoListContext.js';
+import { TodoListDisplayContext } from '../TodoListDisplayContext.js';
 
 function TaskList() {
+    const {hideCompleted, } = useContext(TodoListDisplayContext);
+    const {sortingOrder, } = useContext(TodoListDisplayContext);
     const {items, setContextList} = useContext(TodoListContext);
     
     useEffect(() => {
@@ -25,12 +28,41 @@ function TaskList() {
         }
         fetchData();
     }, [setContextList]);
+
+    useEffect( () => {
+
+    }, [hideCompleted, sortingOrder]);
   
     return (
-        <Container> 
+        <Container>
             {
                 items && items.length > 0 ?
-                items.map(item => {
+                items
+                .sort((a, b) => {
+                    if(sortingOrder === 'asc'){
+                        if(a.description > b.description){
+                            return 1;
+                        } else {
+                            return -1;
+                        };
+                    } else if(sortingOrder === 'desc'){
+                        if(a.description < b.description){
+                            return 1;
+                        } else {
+                            return -1;
+                        };
+                    } else {
+                        if(a.createdAt > b.createdAt){
+                            return 1;
+                        } else {
+                            return -1;
+                        };
+                    } 
+                })
+                .filter(item => { 
+                    return !(hideCompleted && item.state === 'COMPLETE');
+                })
+                .map(item => {
                     return <TaskItem key={item.id} id={item.id} state={item.state} description={item.description}/>
                 }) 
                 : 

@@ -72,11 +72,13 @@ class DatabaseWrapper {
 
         if(state){
             if(state === 'COMPLETE'){
+                //use ISO8601 format
+                const formatted_datetime = new Date().toISOString();
+                update_data.completedAt = formatted_datetime;
                 update_data.state = state;
-                update_data.completedAt = this.db.fn.now();
             } else {
-                update_data.state = state;
                 update_data.completedAt = null;
+                update_data.state = state;
             }
         }
 

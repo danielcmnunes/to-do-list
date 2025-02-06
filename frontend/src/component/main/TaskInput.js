@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Container, Row, Col, Button, ButtonGroup, Form } from 'react-bootstrap';
+import {TodoListContext} from '../TodoListContext.js';
 
-function TaskInput({onSubmitTask}) {
+function TaskInput() {
+    const {items, setContextList} = useContext(TodoListContext);
+
     const [textInput, setTextInput] = useState('');
   
     const handleSubmit = async (event) => {
@@ -17,8 +20,12 @@ function TaskInput({onSubmitTask}) {
             });
             
             const data = await response.json();
-            
-            console.log("TODO: implement feedback behavior");
+
+            const newItems = [...items, data];
+            setContextList(newItems);
+            setTextInput('');
+
+            console.log("TODO: implement feedback behavior")
             
         } catch(error){
             console.log("could not add task");
@@ -30,7 +37,7 @@ function TaskInput({onSubmitTask}) {
         <Container className='m-3'>
             <Form onSubmit={handleSubmit}>
                 <Row>
-                    <Col lg={9}>
+                    <Col xs={7} md={9} lg={10}>
                         <Form.Group controlId='textInput'>
                             <Form.Control required type="text" 
                                 placeholder="Write new task here..."
@@ -39,7 +46,7 @@ function TaskInput({onSubmitTask}) {
                             />
                         </Form.Group>
                     </Col>
-                    <Col lg={3}>
+                    <Col xs={5} md={3} lg={2}>
                         <Button variant="primary" type="submit">
                             Create
                         </Button>

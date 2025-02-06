@@ -3,3 +3,4 @@ node_modules/
 .vscode/
 .dev/
 db/db.sqlite3
+app.test.js

@@ -1,28 +1,33 @@
 'use strict';
 
 const Hapi = require('@hapi/hapi');
-const TodoController = require('./todo/todo')
-const DatabaseWrapper = require('./database/database')
-const JoiSchemas = require('./validation/joischemas')
+const TodoController = require('./todo/todo');
+const DatabaseWrapper = require('./database/database');
 
 const init = async () => {
     const db = new DatabaseWrapper();
 
     const server = Hapi.server({
-        port: 3000,
-        host: 'localhost'
+        port: 3001,
+        host: 'localhost',
+        routes: {
+            cors: {
+                origin: ['*'], //nao restringir ao localhost, para poder usar a partir do exterior
+                credentials: true, //TODO fix
+            },
+        },
     });
 
     server.route({
         method: 'POST',
         path: '/todos',
         handler: async (request, h) => {            
-            const validation = await TodoController.post(db, request.payload);
+            const result = await TodoController.post(db, request.payload);
 
-            if(validation.error){
+            if(result.error){
                 return h.response('failed').code(400);
             } else {                    
-                return h.response(result).code(201);
+                return h.response(result.value).code(201);
             }
         }
     });
@@ -36,7 +41,7 @@ const init = async () => {
             if(result.error){
                 return h.response("failed").code(400);
             } else {                    
-                return h.response(result).code(200);
+                return h.response(result.value).code(200);
             }
         }
     });
@@ -45,12 +50,12 @@ const init = async () => {
         method: 'PATCH',
         path: '/todo/{id}',
         handler: async (request, h) => {
-            const validation = await TodoController.edit(db, request.params, request.payload);
+            const result = await TodoController.edit(db, request.params, request.payload);
 
-            if(validation.error){
+            if(result.error){
                 return h.response('failed').code(400);
             } else {                    
-                return h.response(result).code(200);
+                return h.response(result.value).code(200);
             }
         }
     });

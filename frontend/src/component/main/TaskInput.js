@@ -1,0 +1,52 @@
+import React, { useState } from 'react';
+import { Container, Row, Col, Button, ButtonGroup, Form } from 'react-bootstrap';
+
+function TaskInput({onSubmitTask}) {
+    const [textInput, setTextInput] = useState('');
+  
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        console.log(`will send [${textInput}]`);
+
+        try {
+            const response = await fetch("http://localhost:3001/todos", {
+                method : 'POST',
+                headers : {'Content-Type': 'application/json'},
+                body : JSON.stringify({
+                    'description': textInput
+                })
+            });
+    
+            const data = await response.json();
+
+            console.log(`TODO: handle server response data [${data}]`);
+        } catch(error){
+            console.log("could not add task");
+            console.log(error);
+        }
+    };
+
+    return (
+        <Form onSubmit={handleSubmit}>
+            <Row>
+                <Col>
+                    <Form.Group controlId='textInput'>
+                        <Form.Control required type="text" 
+                            placeholder="Write new task here..."
+                            value={textInput} 
+                            onChange={(e) => setTextInput(e.target.value)}    
+                        />
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Button variant="primary" type="submit">
+                        Create
+                    </Button>
+                </Col>
+            </Row>
+        </Form>
+    );
+}
+
+export default TaskInput;

@@ -3,7 +3,8 @@ const knex = require('knex');
 class DatabaseWrapper {
     constructor(){
         const knexConfig = require('../../db/knexfile');
-        this.db = knex(knexConfig[process.env.NODE_ENV]);        
+        // this.db = knex(knexConfig[process.env.NODE_ENV]);   
+        this.db = knex(knexConfig.development);        
         this.formatted_response = ['id', 'state', 'description', 'createdAt', 'completedAt'];
     }
 

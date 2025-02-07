@@ -1,7 +1,9 @@
 'use strict';
 
+const Jwt = require('@hapi/jwt');
 const Hapi = require('@hapi/hapi');
 const TodoController = require('./todo/todo');
+const AuthController = require('./auth/authcontroller');
 const DatabaseWrapper = require('./database/database');
 
 const init = async () => {
@@ -21,12 +23,9 @@ const init = async () => {
     server.route({
         method: 'POST',
         path: '/todos',
-        handler: async (request, h) => {  
-            try {
-                console.log(`received POST /todos: ${JSON.stringify(request.payload)}`);
-            } catch (error) {
-                console.log("poof, could not print received request");
-            }
+        handler: async (request, h) => {
+            printRequest(method, path, request);
+
             const result = await TodoController.post(db, request.payload);
 
             if(result.error){
@@ -41,11 +40,7 @@ const init = async () => {
         method: 'GET',
         path: '/todos',
         handler: async (request, h) => {
-            try {
-                console.log(`received GET /todos: ${JSON.stringify(request.query)}`);
-            } catch (error) {
-                console.log("poof, could not print received request");
-            }
+            printRequest(method, path, request);
 
             const result = await TodoController.get(db, request.query);
 
@@ -61,11 +56,7 @@ const init = async () => {
         method: 'PATCH',
         path: '/todo/{id}',
         handler: async (request, h) => {
-            try {
-                console.log(`received PATCH /todo/${JSON.stringify(request.params)} | ${JSON.stringify(request.payload)}`);
-            } catch (error) {
-                console.log("poof, could not print received request");
-            }
+            printRequest(method, path, request);
 
             const result = await TodoController.edit(db, request.params, request.payload);
 
@@ -81,17 +72,98 @@ const init = async () => {
         method: 'DELETE',
         path: '/todo/{id}',
         handler: async (request, h) => {
-            try {
-                console.log(`received DELETE /todo/${JSON.stringify(request.params)}`);
-            } catch (error) {
-                console.log("poof, could not print received request");
-            }
-
+            printRequest(method, path, request);
+            
             const result = await TodoController.del(db, request.params);
             if(result === 1){
                 return h.response([]).code(200);
             } else {
                 return h.response([]).code(404);
+            }
+        }
+    });
+
+    /**
+     * Authentication routes
+     */
+    //TODO check response codes
+
+    server.route({
+        method: 'POST',
+        path: '/login',
+        handler: async (request, h) => { 
+            printRequest(method, path, request);
+            
+            const result = await AuthController.login(db, request.payload);
+
+            if(result.error){
+                return h.response('failed').code(400);
+            } else {                    
+                return h.response(result.value).code(200);
+            }
+        }
+    })
+
+    server.route({
+        method: 'POST',
+        path: '/logout',
+        handler: async (request, h) => { 
+            printRequest(method, path, request);
+            
+            const result = await AuthController.logout(db, request.payload);
+
+            if(result.error){
+                return h.response('failed').code(400);
+            } else {                    
+                return h.response(result.value).code(200);
+            }
+        }
+    });
+    
+    server.route({
+        method: 'POST',
+        path: '/users',
+        handler: async (request, h) => {
+            printRequest(method, path, request);
+            
+            const result = await AuthController.register(db, request.payload);
+
+            if(result.error){
+                return h.response('failed').code(400);
+            } else {                    
+                return h.response(result.value).code(200);
+            }
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/me',
+        handler: async (request, h) => {
+            printRequest(method, path, request);
+            
+            const result = await AuthController.details(db, request.payload);
+
+            if(result.error){
+                return h.response('failed').code(400);
+            } else {                    
+                return h.response(result.value).code(200);
+            }
+        }
+    });
+
+    server.route({
+        method: 'PATCH',
+        path: '/me',
+        handler: async (request, h) => {
+            printRequest(method, path, request);
+            
+            const result = await AuthController.edit(db, request.payload);
+
+            if(result.error){
+                return h.response('failed').code(400);
+            } else {                    
+                return h.response(result.value).code(200);
             }
         }
     });

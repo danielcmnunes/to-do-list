@@ -3,10 +3,14 @@ const knex = require('knex');
 class DatabaseWrapper {
     constructor(){
         const knexConfig = require('../../db/knexfile');
-        // this.db = knex(knexConfig[process.env.NODE_ENV]);   
+        // this.db = knex(knexConfig[process.env.NODE_ENV]);
         this.db = knex(knexConfig.development);        
         this.formatted_response = ['id', 'state', 'description', 'createdAt', 'completedAt'];
     }
+
+    /**
+     * To-do
+     */
 
     async add(validatedFields){
         const description = validatedFields.description;
@@ -52,7 +56,6 @@ class DatabaseWrapper {
         const state = validatedFields.filter;
         const field_name = validatedFields.orderBy;
 
-        //TODO: hide incompleted when order by completed_at?
         try {
             if(state === 'ALL'){
                 const items = await this.db.select('*').from('items').orderBy(field_name);
@@ -105,6 +108,90 @@ class DatabaseWrapper {
         }
     }
 
+    /**
+     * Authentication
+     */
+    
+    async login(validatedFields){
+        const username = validatedFields.username;
+        const password = validatedFields.password;
+
+        try {
+            const result = await this.db.select('token').from('users').where({username: username, password: password});
+            return result; 
+        } catch (err) {
+            console.error(err);
+            return []
+        }
+    }
+
+    async logout(validatedFields){
+        const username = validatedFields.username;
+        const token = validatedFields.token;
+
+        try {
+            const result = await this.db('users').where({username: username, token: token}).update({token: null});
+            return result; 
+        } catch (err) {
+            console.error(err);
+            return []
+        }
+    }
+    
+    async register(validatedFields){
+        const username = validatedFields.username;
+        const email = validatedFields.email;
+        const password = validatedFields.password;
+        
+        //TODO implement jwt
+
+        try {
+            const result = await this.db('users').insert({ 
+                username: username,
+                email: email, 
+                password: password, 
+                createdAt: this.db.fn.now(),
+                lastLogin: this.db.fn.now(),
+                token: '<<jwt token here>>'
+            }, ['token']);
+            return result; 
+        } catch (err) {
+            console.error(err);
+            return []
+        }
+    }
+    
+    async details(validatedFields){
+        const token = validatedFields.token;
+
+        //TODO implement jwt
+
+        try {
+            const result = await this.db.select('username, email').from('users').where({token: token});
+            return result; 
+        } catch (err) {
+            console.error(err);
+            return []
+        }
+    }
+
+    async editDetails(validatedFields){
+        const username = validatedFields.username;
+        const email = validatedFields.email;
+        const token = validatedFields.token;
+
+        try {
+            const result = await this.db('users').where({token: token})
+            .update({
+                username: username,
+                email: email
+            }, ['username', 'email']);
+            return result;
+        } catch (err) {
+            console.error(err);
+            return []
+        }
+    }
 }
 
 module.exports = DatabaseWrapper

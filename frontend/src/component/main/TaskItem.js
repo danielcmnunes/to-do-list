@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col, Button, ButtonGroup, Form } from 'react-bootstrap';
 import {TodoListContext} from '../TodoListContext.js';
+import Collapse from 'react-bootstrap/Collapse';
 
 function TaskItem({id, state, description}) {
     const {items, setContextList} = useContext(TodoListContext);
@@ -14,6 +15,8 @@ function TaskItem({id, state, description}) {
 
     const [isEditing, setEditing] = useState(false);
     const [descriptionStyle, setDescriptionStyle] = useState({textDecorationLine: 'none'});
+
+    const [open, setOpen] = useState(true);
     
 
     useEffect( () => {
@@ -85,11 +88,8 @@ function TaskItem({id, state, description}) {
                 console.log(`received delete`, data);
 
                 if(response.status === 200){
-                    //update context
-                    const newItems = items.filter(item => item.id !== _id);
-                    setContextList(newItems);
+                    setOpen(false);
                     
-                    console.log(`TODO: deleted; implement feedback behavior`);    
                 } else if(response.status === 404){
                     console.log(`TODO: not found; implement feedback behavior`);    
                 } else {
@@ -103,7 +103,13 @@ function TaskItem({id, state, description}) {
         sendDelete();
     }
 
+    const updateContext = () => {
+        const newItems = items.filter(item => item.id !== _id);
+        setContextList(newItems);
+    }
+
     const handleCheckboxClick = (e) => {
+        
         const newIsComplete = isComplete === 'COMPLETE' ? 'INCOMPLETE' : 'COMPLETE';
         setComplete(newIsComplete);
 
@@ -126,7 +132,7 @@ function TaskItem({id, state, description}) {
                     if(item.id === _id){
                         return {
                             ...item,
-                            state: isComplete
+                            state: newIsComplete
                         }
                     } else {
                         return item;
@@ -146,51 +152,54 @@ function TaskItem({id, state, description}) {
     }
   
     return (
-        <Row>
+        <Collapse in={open} dimension='height' unmountOnExit={true} onExited={updateContext}>
+        <Row className='bg-light border'>
             <Col xs={2} lg={1}>
                 <input type="checkbox" checked={isComplete === 'COMPLETE'} onChange={handleCheckboxClick}></input>
             </Col>
             <Col xs={6} lg={9}>
-                {
-                    isEditing ?
-                    <>
-                        <Form.Group controlId='descriptionInput'>
-                            <Form.Control required type="text"
-                                value={descriptionInput} 
-                                onChange={(e) => setDescriptionInput(e.target.value)}
-                            />
-                        </Form.Group>
-                    </>
-                    :
-                    <>
-                        <p style={descriptionStyle}>{_description}</p>
-                    </>
-                }
-                              
+                <Row>
+                    {
+                        isEditing ?
+                        <>
+                            <Form.Group controlId='descriptionInput'>
+                                <Form.Control required type="text"
+                                    value={descriptionInput} 
+                                    onChange={(e) => setDescriptionInput(e.target.value)}
+                                />
+                            </Form.Group>
+                        </>
+                        :
+                        <>
+                            <span className="my-2" style={descriptionStyle}>{_description}</span>
+                        </>
+                    }
+                </Row>                              
             </Col>
             <Col xs={4} lg={2}>
                 {
                     isEditing ?
                     <>                        
-                        <Button className='m-1' onClick={() => {saveChanges()}}>
+                        <Button variant='success' className='m-1' onClick={() => {saveChanges()}}>
                             <i className="bi bi-floppy"></i>
                         </Button>
-                        <Button className='m-1' onClick={() => {discardChanges()}}>
+                        <Button variant='secondary' className='m-1' onClick={() => {discardChanges()}}>
                             <i className="bi bi-x"></i>
                         </Button>
                     </>
                     :
                     <>
-                        <Button className='m-1' onClick={() => {enableEditing()}}>
+                        <Button className='m-1' disabled={ isComplete === 'COMPLETE' } onClick={() => {enableEditing()}}>
                             <i className="bi bi-pencil-square"></i>
                         </Button>
-                        <Button className='m-1' onClick={() => {deleteItem()}}>
+                        <Button variant='danger' className='m-1' onClick={() => {deleteItem()}}>
                             <i className="bi bi-trash"></i>
                         </Button>
                     </>
                 }
             </Col>
         </Row>
+        </Collapse>
     );
 }
 

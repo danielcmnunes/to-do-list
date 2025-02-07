@@ -22,7 +22,7 @@ function MainScreen() {
     <TodoListContext.Provider value={{items, setContextList: setItems}}>
         <TodoListDisplayContext.Provider value={{hideCompleted, setHideCompleted, sortingOrder, setSortingOrder }}>
             <Container>
-                <Row className='d-flex justify-content-between mb-3'>
+                <Row className='d-flex justify-content-between my-3'>
                     <ButtonGroup>
                         <Button variant='primary' className='' onClick={() => { }}> 
                             <label className='me-1'>Profile</label>
@@ -40,7 +40,7 @@ function MainScreen() {
                 <Row> <ListSorting/> </Row>
                 <Row> <TaskInput/> </Row>
                 <Row> <TaskList/> </Row>
-                <Row> <ListFilter/></Row>
+                <Row className='mt-3'> <ListFilter/></Row>
             </Container>
         </TodoListDisplayContext.Provider>
     </TodoListContext.Provider>

@@ -21,10 +21,14 @@ class AuthSchemas {
     }
 
     static loginResponse(){
-        return Joi.object({                
+        return Joi.object({  
+            username: 
+                Joi.string()
+                .max(64)
+                .required(),
+
             token: 
                 Joi.string()
-                .max(256)
                 .required()
         });
     }
@@ -42,7 +46,6 @@ class AuthSchemas {
                                
             token: 
                 Joi.string()
-                .max(256)
                 .required()
         });
     }
@@ -75,9 +78,9 @@ class AuthSchemas {
 
     static registerResponse(){
         return Joi.object({                
-            jwt: 
+            username: 
                 Joi.string()
-                .max(256)
+                .max(64)
                 .required()
         });
     }
@@ -86,14 +89,9 @@ class AuthSchemas {
     /**
      * DETAILS
      */
-    static detailsRequest(){
-        return Joi.object({                
-            token: 
-                Joi.string()
-                .max(256)
-                .required()
-        });
-    }
+    // static detailsRequest(){
+    //     return true;
+    // }
 
     static detailsResponse(){
         return Joi.object({                
@@ -126,7 +124,6 @@ class AuthSchemas {
                 .optional(),
             token: 
                 Joi.string()
-                .max(256)
                 .required()
         }).or('username', 'email');
     }

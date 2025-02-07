@@ -6,12 +6,12 @@ import Alert from 'react-bootstrap/Alert';
 import '/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-import { LoginContext } from '../LoginContext.js';
+import { AuthContext } from '../context/AuthContext.js';
 
 function Login() {
-    const {loggedIn, setLoggedIn} = useContext(LoginContext);
+    const {token, setToken, isLoggedIn, setLoggedIn} = useContext(AuthContext);
 
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
   
     const [isLoggingIn, setLoggingIn] = useState(false);
@@ -20,60 +20,45 @@ function Login() {
     const [failMessage, setFailMessage] = useState(false);
 
     useEffect(() => {
-        setEmail("test@example.com");
-        setPassword("!#$&%/(=)?");
+        setUsername("daniel");
+        setPassword("123");
         console.log("test: auto fill");
     }, []);
 
     const attemptLogin = async (e) => {
-        setLoggedIn(true);
-
+        e.preventDefault();
         setLoggingIn(true);
-
+    
         try {
-          e.preventDefault();      
-        } catch (error) {
-          console.log("called directly");      
-        }
+            const response = await fetch("http://localhost:3001/login", {
+                method : 'POST',
+                headers : {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    'username': username,
+                    'password': password
+                })
+            });
     
-        let data = {
-          email: email,
-          password: password
+            const data = await response.json();
+            setToken(data.token);
+
+            setSuccessMessage('Logged in.');
+            setLoggingIn(false);
+            
+            setLoggedIn(true);
+
+        } catch(error){
+            setLoggingIn(false);
+            setFailMessage('Login failed.');
+            console.log(error);
         }
-
-        // fetch("localhost/login", {
-        //     method : 'POST',
-        //     headers : {'Content-Type': 'application/json'},
-        //     body : JSON.stringify(data)
-        // })
-        // .then((response) => response.json())
-        // .then((data) => {    
-        //   if(data.success){
-        //     // localStorage.setItem("jwt", data.token);
-
-
-    
-        //         setSuccessMessage('Logged in.');
-        //         setSuccessAlert(true);
-
-        //     } else {
-        //         setFailMessage('Login failed.');
-        //         setFailAlert(true);
-        //     }      
-        //     setLoggingIn(false);
-        // })
-        // .catch((error) => {
-        //     setLoggingIn(false);
-        //     setFailMessage('Login failed.');
-        //     setFailAlert(true);
-        // });
-    }   
+    }
 
     return(
     <>        
         <form onSubmit={attemptLogin}>
             <div className="mb-3">
-                <input type="email" placeholder="Email" required value={email} onChange={(e) => setEmail(e.target.value)}/>
+                <input type="text" placeholder="Username" required value={username} onChange={(e) => setUsername(e.target.value)}/>
             </div>
             <div className="mb-3">
             <input type="password" placeholder="Password" required value={password} onChange={(e) => setPassword(e.target.value)}/>

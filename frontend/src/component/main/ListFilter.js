@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col, Button, ButtonGroup, Form, InputGroup } from 'react-bootstrap';
 import TaskItem from './TaskItem';
-import { TodoListDisplayContext } from '../TodoListDisplayContext.js';
+import { TodoListDisplayContext } from '../context/TodoListDisplayContext.js';
 
 function ListFilter() {
     const {hideCompleted, setHideCompleted} = useContext(TodoListDisplayContext);

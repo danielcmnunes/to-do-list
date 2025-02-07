@@ -1,13 +1,15 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col, Button, ButtonGroup, Form, InputGroup } from 'react-bootstrap';
 import TaskItem from './TaskItem';
-import { TodoListContext } from '../TodoListContext.js';
-import { TodoListDisplayContext } from '../TodoListDisplayContext.js';
+import { TodoListContext } from '../context/TodoListContext.js';
+import { TodoListDisplayContext } from '../context/TodoListDisplayContext.js';
+import { AuthContext } from '../context/AuthContext.js';
 
 function TaskList() {
     const {hideCompleted, } = useContext(TodoListDisplayContext);
     const {sortingOrder, } = useContext(TodoListDisplayContext);
     const {items, setContextList} = useContext(TodoListContext);
+    const {token, setToken, isLoggedIn, setLoggedIn} = useContext(AuthContext);
     
     useEffect(() => {
         console.log(`asking list...`);
@@ -15,7 +17,10 @@ function TaskList() {
             try {
                 const response = await fetch("http://localhost:3001/todos", {
                     method : 'GET',
-                    headers : {'Content-Type': 'application/json'}
+                    headers : {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer '+ token
+                    }
                 });
         
                 const data = await response.json();

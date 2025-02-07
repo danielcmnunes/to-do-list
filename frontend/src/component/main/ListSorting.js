@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import { TodoListDisplayContext } from '../TodoListDisplayContext.js';
+import { TodoListDisplayContext } from '../context/TodoListDisplayContext.js';
 
 function ListSorting() {
     const {sortingOrder, setSortingOrder} = useContext(TodoListDisplayContext);    

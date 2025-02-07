@@ -111,17 +111,26 @@ class DatabaseWrapper {
     /**
      * Authentication
      */
+
+    async getUser(username){
+        try {            
+            const result = await this.db.select('username').from('users').where({'username': username}).first();
+            return result;
+        } catch (e) {
+            return undefined;
+        }
+    }
     
-    async login(validatedFields){
+    async checkUserPass(validatedFields){
         const username = validatedFields.username;
         const password = validatedFields.password;
 
         try {
-            const result = await this.db.select('token').from('users').where({username: username, password: password});
-            return result; 
+            const result = await this.db.select('username').from('users').where({username: username, password: password}).first();
+            return result;
         } catch (err) {
             console.error(err);
-            return []
+            return {};
         }
     }
 
@@ -143,35 +152,28 @@ class DatabaseWrapper {
         const email = validatedFields.email;
         const password = validatedFields.password;
         
-        //TODO implement jwt
-
         try {
             const result = await this.db('users').insert({ 
                 username: username,
                 email: email, 
                 password: password, 
                 createdAt: this.db.fn.now(),
-                lastLogin: this.db.fn.now(),
-                token: '<<jwt token here>>'
-            }, ['token']);
-            return result; 
+                lastLogin: this.db.fn.now()
+            }, ['username']);
+            return result[0];
         } catch (err) {
             console.error(err);
             return []
         }
     }
     
-    async details(validatedFields){
-        const token = validatedFields.token;
-
-        //TODO implement jwt
-
+    async details(username){
         try {
-            const result = await this.db.select('username, email').from('users').where({token: token});
+            const result = await this.db.select(['username', 'email']).from('users').where({'username': username}).first();
             return result; 
         } catch (err) {
             console.error(err);
-            return []
+            return {}
         }
     }
 
@@ -192,6 +194,8 @@ class DatabaseWrapper {
             return []
         }
     }
+
+
 }
 
 module.exports = DatabaseWrapper

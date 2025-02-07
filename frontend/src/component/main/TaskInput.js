@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Container, Row, Col, Button, ButtonGroup, Form } from 'react-bootstrap';
-import {TodoListContext} from '../TodoListContext.js';
+import {TodoListContext} from '../context/TodoListContext.js';
 
 function TaskInput() {
     const {items, setContextList} = useContext(TodoListContext);

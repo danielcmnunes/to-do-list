@@ -16,7 +16,7 @@ function LoginScreen() {
     return(
     <>
         <Container>
-            <Tabs defaultActiveKey="login" id="uncontrolled-tab-example" className="mb-3">
+            <Tabs defaultActiveKey="register" id="uncontrolled-tab-example" className="mb-3">
                 <Tab eventKey="login" title="Login">
                     <Login/>
                 </Tab>

@@ -1,23 +1,20 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container } from 'react-bootstrap';
 import React, { useState, useEffect, useContext } from 'react';
-import { Container, Row, Button, ButtonGroup } from 'react-bootstrap';
+import { AuthContext } from './component/context/AuthContext.js';
 import LoginScreen from './component/login/LoginScreen.js';
 import MainScreen from './component/main/MainScreen.js';
-import { LoginContext } from './component/LoginContext.js';
 
 function App() {
-	const [loggedIn, setLoggedIn] = useState(false);
-
-	useEffect(()=> {
-		
-	});
+    const [token, setToken] = useState(undefined);
+    const [isLoggedIn, setLoggedIn] = useState(false);
 
 	return (
 		<div className="App">
-		<Container>
-			<LoginContext.Provider value={{loggedIn, setLoggedIn}}>
-					{ !loggedIn ?
+			<AuthContext.Provider value={{token, setToken, isLoggedIn, setLoggedIn}}>
+				<Container>
+					{ !isLoggedIn ?
 					<>
 						<LoginScreen />
 					</>
@@ -26,8 +23,8 @@ function App() {
 						<MainScreen/>
 					</>
 					}
-			</LoginContext.Provider>
-		</Container>
+				</Container>
+			</AuthContext.Provider>
 		</div>
 	);
 }

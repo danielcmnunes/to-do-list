@@ -15,16 +15,35 @@ const init = async () => {
         routes: {
             cors: {
                 origin: ['*'], //nao restringir ao localhost, para poder usar a partir do exterior
-                credentials: true, //TODO fix
+                // credentials: true, //TODO fix
             },
         },
     });
+
+    await server.register(Jwt);
+    server.auth.strategy('todo_list_jwt_strategy', 'jwt', AuthController.getStrategy(db));
+    server.auth.default('todo_list_jwt_strategy');
+
+    function printRequest(request){
+        try {
+            const payload = JSON.stringify(request.payload);
+            const params = JSON.stringify(request.params);
+            const query = JSON.stringify(request.query);
+            console.log(`received ${request.method} ${request.path} query[${query}] params[${params}] payload[${payload}]`)
+        } catch (error) {
+            console.log(`poof, could not print ${method} ${path}`);
+        }
+    }
+
+    /**
+     * To-do routes
+     */
 
     server.route({
         method: 'POST',
         path: '/todos',
         handler: async (request, h) => {
-            printRequest(method, path, request);
+            printRequest(request);
 
             const result = await TodoController.post(db, request.payload);
 
@@ -40,7 +59,7 @@ const init = async () => {
         method: 'GET',
         path: '/todos',
         handler: async (request, h) => {
-            printRequest(method, path, request);
+            printRequest(request);
 
             const result = await TodoController.get(db, request.query);
 
@@ -56,7 +75,7 @@ const init = async () => {
         method: 'PATCH',
         path: '/todo/{id}',
         handler: async (request, h) => {
-            printRequest(method, path, request);
+            printRequest(request);
 
             const result = await TodoController.edit(db, request.params, request.payload);
 
@@ -72,7 +91,7 @@ const init = async () => {
         method: 'DELETE',
         path: '/todo/{id}',
         handler: async (request, h) => {
-            printRequest(method, path, request);
+            printRequest(request);
             
             const result = await TodoController.del(db, request.params);
             if(result === 1){
@@ -91,31 +110,33 @@ const init = async () => {
     server.route({
         method: 'POST',
         path: '/login',
-        handler: async (request, h) => { 
-            printRequest(method, path, request);
-            
-            const result = await AuthController.login(db, request.payload);
-
-            if(result.error){
-                return h.response('failed').code(400);
-            } else {                    
-                return h.response(result.value).code(200);
+        options: {
+            auth: false,
+            handler: async (request, h) => {
+                printRequest(request);
+                
+                const result = await AuthController.login(db, request.payload);
+    
+                if(result.error){
+                    return h.response('failed').code(400);
+                } else {                    
+                    return h.response(result.value).code(200);
+                }
             }
         }
-    })
+    });
 
     server.route({
         method: 'POST',
         path: '/logout',
-        handler: async (request, h) => { 
-            printRequest(method, path, request);
-            
-            const result = await AuthController.logout(db, request.payload);
+        options: {
+            auth: false,
+            handler: async (request, h) => { 
+                printRequest(request);
 
-            if(result.error){
-                return h.response('failed').code(400);
-            } else {                    
-                return h.response(result.value).code(200);
+                //TODO update session state to "logged out"
+
+                h.response(result.value).code(200);
             }
         }
     });
@@ -123,15 +144,18 @@ const init = async () => {
     server.route({
         method: 'POST',
         path: '/users',
-        handler: async (request, h) => {
-            printRequest(method, path, request);
-            
-            const result = await AuthController.register(db, request.payload);
+        options: {
+            auth: false,
+            handler: async (request, h) => {
+                printRequest(request);
+                
+                const result = await AuthController.register(db, request.payload);
 
-            if(result.error){
-                return h.response('failed').code(400);
-            } else {                    
-                return h.response(result.value).code(200);
+                if(result.error){
+                    return h.response('failed').code(400);
+                } else {                    
+                    return h.response(result.value).code(200);
+                }
             }
         }
     });
@@ -139,15 +163,20 @@ const init = async () => {
     server.route({
         method: 'GET',
         path: '/me',
-        handler: async (request, h) => {
-            printRequest(method, path, request);
-            
-            const result = await AuthController.details(db, request.payload);
+        options: {
+            auth: { 
+                strategy: 'todo_list_jwt_strategy'
+            },
+            handler: async (request, h) => {
+                printRequest(request);
+                
+                const result = await AuthController.details(db, h.request);
 
-            if(result.error){
-                return h.response('failed').code(400);
-            } else {                    
-                return h.response(result.value).code(200);
+                if(result.error){
+                    return h.response('failed').code(400);
+                } else {
+                    return h.response(result.value).code(200);
+                }
             }
         }
     });
@@ -155,15 +184,20 @@ const init = async () => {
     server.route({
         method: 'PATCH',
         path: '/me',
-        handler: async (request, h) => {
-            printRequest(method, path, request);
-            
-            const result = await AuthController.edit(db, request.payload);
-
-            if(result.error){
-                return h.response('failed').code(400);
-            } else {                    
-                return h.response(result.value).code(200);
+        options: {
+            auth: {
+                strategy: 'todo_list_jwt_strategy'
+            },
+            handler: async (request, h) => {
+                printRequest(request);
+                
+                const result = await AuthController.edit(db, request.payload);
+    
+                if(result.error){
+                    return h.response('failed').code(400);
+                } else {
+                    return h.response(result.value).code(200);
+                }
             }
         }
     });

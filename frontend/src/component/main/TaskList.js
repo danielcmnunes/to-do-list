@@ -66,7 +66,7 @@ function TaskList() {
                     return <TaskItem key={item.id} id={item.id} state={item.state} description={item.description}/>
                 }) 
                 : 
-                <div>Loading...</div>
+                <div>There are no tasks.</div>
             }
         </Container>
     );

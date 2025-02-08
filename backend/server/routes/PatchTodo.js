@@ -8,6 +8,7 @@ function PatchTodo(server){
         path: '/todo/{id}',
         options: {
             description: 'Returns a json objects representing the edited to-do item',
+            notes: ['requires a valid JWT token'],
             tags: ['api', 'todo'],
             auth: { 
                 strategy: 'todo_list_jwt_strategy'

@@ -8,7 +8,8 @@ function PatchMe(server){
         path: '/me',
         options: {
             description: 'Returns the edited details of the authenticated user',
-            tags: ['api', 'auth'],
+            notes: ['requires a valid JWT token'],
+            tags: ['api', 'details'],
             auth: { 
                 strategy: 'todo_list_jwt_strategy'
             },

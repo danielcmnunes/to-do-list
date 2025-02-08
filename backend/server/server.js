@@ -41,7 +41,8 @@ const init = async () => {
         info: {
             title: 'Test API Documentation',
             version: "1.0",
-        }
+        },
+        grouping: 'tags'
     };
 
     await server.register([

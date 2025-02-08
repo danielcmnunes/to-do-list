@@ -8,6 +8,7 @@ function PostTodos(server){
         path: '/todos',
         options: {
             description: 'Returns a json object representing the created to-do item',
+            notes: ['requires a valid JWT token'],
             tags: ['api', 'todo'],
             auth: { 
                 strategy: 'todo_list_jwt_strategy'

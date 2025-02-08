@@ -8,6 +8,7 @@ function GetTodos(server){
         path: '/todos',
         options: {
             description: 'Returns a json array of objects representing the to-do items',
+            notes: ['requires a valid JWT token'],
             tags: ['api', 'todo'],
             auth: { 
                 strategy: 'todo_list_jwt_strategy'

@@ -1,23 +1,23 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Container, Card, Row } from 'react-bootstrap';
-import Spinner from 'react-bootstrap/Spinner';
-import Alert from 'react-bootstrap/Alert';
+import { Container, Card, Row, Spinner, Alert, Form, FloatingLabel, Button } from 'react-bootstrap';
 import '/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { AuthContext } from '../context/AuthContext';
-
+import FeedbackMessage from '../util/FeedbackMessage';
 
 function Register() {
-    const {token, setToken, isLoggedIn, setLoggedIn} = useContext(AuthContext);
+    const {setToken, setLoggedIn} = useContext(AuthContext);
 
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [username_registration, setUsername] = useState('');
+    const [email_registration, setEmail] = useState('');
+    const [password_registration, setPassword] = useState('');
   
     const [isRegistering, setRegistering] = useState(false);
 
     const [successMessage, setSuccessMessage] = useState('');
     const [failMessage, setFailMessage] = useState(false);
+    
+    const SUCCESS_DURATION = 4000;
 
     useEffect(() => {
         setUsername("Joaozinho");
@@ -35,21 +35,21 @@ function Register() {
                 method : 'POST',
                 headers : {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    'username': username,                    
-                    'email': email,
-                    'password': password
+                    'username': username_registration,                    
+                    'email': email_registration,
+                    'password': password_registration
                 })
             });
     
             const data = await response.json();
             setToken(data.token);
 
-            setSuccessMessage('Registration completed! Logged in.');
             setRegistering(false);
-            
-            setTimeout( () => {
+            setSuccessMessage('Registration completed! Logged in.');
+
+            setTimeout(() => {
                 setLoggedIn(true);
-            }, 2000);
+            }, SUCCESS_DURATION);
 
         } catch(error){
             setRegistering(false);
@@ -59,26 +59,32 @@ function Register() {
     }   
 
     return(
-    <>        
-        <form onSubmit={attemptRegister}>
-            <div className="mb-3">
-                <input type="text" placeholder="Username" required value={username} onChange={(e) => setUsername(e.target.value)}/>
-            </div>
-            <div className="mb-3">
-                <input type="email" placeholder="Email" required value={email} onChange={(e) => setEmail(e.target.value)}/>
-            </div>
-            <div className="mb-3">
-            <input type="password" placeholder="Password" required value={password} onChange={(e) => setPassword(e.target.value)}/>
-            </div>
-            <div className="mb-3">
-                <button type="submit">Register</button>
-            </div>
-            <div className="mb-3">                    
-                <Spinner className={isRegistering ? "d-block mt-3" : "d-none"} animation="border" variant="primary" />
-                <Alert variant="success" className={successMessage.length > 0 ? "d-block mt-3" : "d-none"}>{successMessage}</Alert>					
-                <Alert variant="warning" className={failMessage.length > 0 ? "d-block mt-3" : "d-none"}>{failMessage}</Alert>
-            </div>
-        </form>
+    <>
+    <Row>
+        
+    </Row>
+        <Form onSubmit={attemptRegister}>
+            <FloatingLabel controlId="username_registration" label="Username" className="mb-3">
+                <Form.Control required type="text" value={username_registration}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+            </FloatingLabel>
+            <FloatingLabel controlId="email_registration" label="Email address" className="mb-3">
+                <Form.Control required type="text" value={email_registration}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+            </FloatingLabel>
+            <FloatingLabel controlId="password_registration" label="Password" className="mb-3">
+                <Form.Control required type="password" value={password_registration}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+            </FloatingLabel>
+            <Button className='w-100 mb-3' type="submit">Register</Button>
+
+            <Spinner className={isRegistering ? "d-block mt-3" : "d-none"} animation="border" variant="primary" />
+            <FeedbackMessage variant="success" message={successMessage} duration={SUCCESS_DURATION}/>
+            <FeedbackMessage variant="warning" message={failMessage}/>
+        </Form>
     </>
     );
 }

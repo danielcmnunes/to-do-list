@@ -1,9 +1,11 @@
 import React, { useState, useContext } from 'react';
-import { Container, Row, Col, Button, ButtonGroup, Form } from 'react-bootstrap';
+import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import {TodoListContext} from '../context/TodoListContext.js';
+import { AuthContext } from '../context/AuthContext.js';
 
 function TaskInput() {
     const {items, setContextList} = useContext(TodoListContext);
+    const {token} = useContext(AuthContext);
 
     const [textInput, setTextInput] = useState('');
   
@@ -13,7 +15,10 @@ function TaskInput() {
         try {
             const response = await fetch("http://localhost:3001/todos", {
                 method : 'POST',
-                headers : {'Content-Type': 'application/json'},
+                headers : {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+ token
+                },
                 body : JSON.stringify({
                     'description': textInput
                 })

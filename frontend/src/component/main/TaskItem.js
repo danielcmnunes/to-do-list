@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Container, Row, Col, Button, ButtonGroup, Form } from 'react-bootstrap';
+import { Row, Col, Button, Form, Collapse } from 'react-bootstrap';
 import {TodoListContext} from '../context/TodoListContext.js';
-import Collapse from 'react-bootstrap/Collapse';
+import { AuthContext } from '../context/AuthContext.js';
 
 function TaskItem({id, state, description}) {
     const {items, setContextList} = useContext(TodoListContext);
-
-    const [_id, setId] = useState(id);
+    const {token } = useContext(AuthContext);
 
     const [isComplete, setComplete] = useState(state);
 
@@ -41,7 +40,10 @@ function TaskItem({id, state, description}) {
             try {
                 const response = await fetch("http://localhost:3001/todo/" + id, {
                     method : 'PATCH',
-                    headers : {'Content-Type': 'application/json'},
+                    headers : {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer '+ token
+                    },
                     body: JSON.stringify({
                         description: descriptionInput
                     })
@@ -52,7 +54,7 @@ function TaskItem({id, state, description}) {
 
                 //update context
                 const newItems = items.map(item => {
-                    if(item.id === _id){
+                    if(item.id === id){
                         return {
                             ...item,
                             description: descriptionInput
@@ -80,7 +82,10 @@ function TaskItem({id, state, description}) {
             try {
                 const response = await fetch("http://localhost:3001/todo/" + id, {
                     method : 'DELETE',
-                    headers : {'Content-Type': 'application/json'}
+                    headers : {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer '+ token
+                    }
                 });
         
                 const data = await response.json();
@@ -104,7 +109,7 @@ function TaskItem({id, state, description}) {
     }
 
     const updateContext = () => {
-        const newItems = items.filter(item => item.id !== _id);
+        const newItems = items.filter(item => item.id !== id);
         setContextList(newItems);
     }
 
@@ -117,7 +122,10 @@ function TaskItem({id, state, description}) {
             try {
                 const response = await fetch("http://localhost:3001/todo/" + id, {
                     method : 'PATCH',
-                    headers : {'Content-Type': 'application/json'},
+                    headers : {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer '+ token
+                    },
                     body: JSON.stringify({
                         state: newIsComplete
                     })
@@ -129,7 +137,7 @@ function TaskItem({id, state, description}) {
 
                 //update context
                 const newItems = items.map(item => {
-                    if(item.id === _id){
+                    if(item.id === id){
                         return {
                             ...item,
                             state: newIsComplete

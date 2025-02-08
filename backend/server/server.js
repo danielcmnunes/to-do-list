@@ -191,7 +191,7 @@ const init = async () => {
             handler: async (request, h) => {
                 printRequest(request);
                 
-                const result = await AuthController.edit(db, request.payload);
+                const result = await AuthController.edit(db, h.request);
     
                 if(result.error){
                     return h.response('failed').code(400);

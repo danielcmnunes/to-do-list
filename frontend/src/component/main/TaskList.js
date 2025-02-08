@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Container, Row, Col, Button, ButtonGroup, Form, InputGroup } from 'react-bootstrap';
+import React, { useEffect, useContext } from 'react';
+import { Container } from 'react-bootstrap';
 import TaskItem from './TaskItem';
 import { TodoListContext } from '../context/TodoListContext.js';
 import { TodoListDisplayContext } from '../context/TodoListDisplayContext.js';
@@ -9,7 +9,7 @@ function TaskList() {
     const {hideCompleted, } = useContext(TodoListDisplayContext);
     const {sortingOrder, } = useContext(TodoListDisplayContext);
     const {items, setContextList} = useContext(TodoListContext);
-    const {token, setToken, isLoggedIn, setLoggedIn} = useContext(AuthContext);
+    const {token} = useContext(AuthContext);
     
     useEffect(() => {
         console.log(`asking list...`);

@@ -81,6 +81,9 @@ class AuthSchemas {
             username: 
                 Joi.string()
                 .max(64)
+                .required(),
+            token: 
+                Joi.string()
                 .required()
         });
     }
@@ -89,9 +92,6 @@ class AuthSchemas {
     /**
      * DETAILS
      */
-    // static detailsRequest(){
-    //     return true;
-    // }
 
     static detailsResponse(){
         return Joi.object({                
@@ -112,20 +112,16 @@ class AuthSchemas {
      */
     static editRequest(){
         return Joi.object({
-            username: 
-                Joi.string()
-                .max(64)
-                .required()
-                .optional(),
             email: 
                 Joi.string()
                 .max(256)
                 .required()
                 .optional(),
-            token: 
+            password: 
                 Joi.string()
-                .required()
-        }).or('username', 'email');
+                .max(64)
+                .optional()
+        });
     }
 
     static editResponse(){

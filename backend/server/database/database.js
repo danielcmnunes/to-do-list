@@ -177,18 +177,11 @@ class DatabaseWrapper {
         }
     }
 
-    async editDetails(validatedFields){
-        const username = validatedFields.username;
-        const email = validatedFields.email;
-        const token = validatedFields.token;
-
+    async editDetails(validatedFields, username){
         try {
-            const result = await this.db('users').where({token: token})
-            .update({
-                username: username,
-                email: email
-            }, ['username', 'email']);
-            return result;
+            const result = await this.db('users').where({'username': username})
+                .update(validatedFields, ['username', 'email']);
+            return result[0];
         } catch (err) {
             console.error(err);
             return []

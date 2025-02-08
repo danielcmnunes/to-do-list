@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Container, Card, Row } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
@@ -16,15 +16,20 @@ function LoginScreen() {
     return(
     <>
         <Container>
-            <Tabs defaultActiveKey="register" id="uncontrolled-tab-example" className="mb-3">
+            <Row className='mb-3'>
+                <Col xs={12}>
+                    <i className="bi bi-card-checklist" style={{'font-size': '25vw'}}></i>
+                    <p><strong>TO-DO List App</strong></p>
+                </Col>
+            </Row>
+            <Tabs defaultActiveKey="login" id="uncontrolled-tab-example" className="mb-3" fill>
                 <Tab eventKey="login" title="Login">
                     <Login/>
                 </Tab>
                 <Tab eventKey="register" title="Register">
                     <Register/>
                 </Tab>
-            </Tabs>
-            
+            </Tabs>            
         </Container>
     </>
     );

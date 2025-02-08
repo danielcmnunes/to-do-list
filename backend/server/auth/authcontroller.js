@@ -62,7 +62,7 @@ AuthController.login = async function(database, payload){
 
     const response = {};
 
-    if(result.username){
+    if(result && result.username){
         const username = payload.username;
         response.username = username,
         response.token = await AuthController.generateToken(username);
@@ -93,10 +93,17 @@ AuthController.register = async function(database, payload){
         return validation;
     }
 
-    const result = await database.register(validation.value);
+    const registration_result = await database.register(validation.value);
+
+    const response = {};
+    if(registration_result && registration_result.username){
+        const username = payload.username;
+        response.username = username,
+        response.token = await AuthController.generateToken(username);
+    }
 
     const response_schema = JoiSchemas.registerResponse();
-    const response_validation = response_schema.validate(result);
+    const response_validation = response_schema.validate(response);
     return response_validation;
 };
 
@@ -110,15 +117,17 @@ AuthController.details = async function(database, request){
     return response_validation;
 };
 
-AuthController.edit = async function(database, payload){
+AuthController.edit = async function(database, request){    
+    const username = request.auth.credentials.username;
+
     const request_schema = JoiSchemas.editRequest();
-    const validation = request_schema.validate(payload);
+    const validation = request_schema.validate(request.payload);
 
     if(validation.error){
         return validation;
     }
     
-    const result = await database.editDetails(validation.value);
+    const result = await database.editDetails(validation.value, username);
 
     const response_schema = JoiSchemas.editResponse();
     const response_validation = response_schema.validate(result);

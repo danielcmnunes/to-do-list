@@ -1,18 +1,27 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Container, Row, Col, Button, ButtonGroup, Form } from 'react-bootstrap';
+import React, { useEffect, useState, useContext, useActionState } from 'react';
+import { Container, Row, Col, Button, Form, Spinner, Alert, FloatingLabel, Collapse } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
+import FeedbackMessage from '../util/FeedbackMessage';
 
-function Details({id, state, description}) {
-    const {token } = useContext(AuthContext);
+function Details() {
+    const {token} = useContext(AuthContext);
+
     const [isEditing, setEditing] = useState(false);
+    const [isUpdating, setUpdating] = useState(false);
+
+    const [successMessage, setSuccessMessage] = useState('');
+    const [failMessage, setFailMessage] = useState('');
+
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+
+    const [usernameInput, setUsernameInput] = useState('');
     const [emailInput, setEmailInput] = useState('');
-    const [passwordInput, setPasswordInput] = useState('');
+    const [passwordInput, setPasswordInput] = useState('');    
     const [passwordConfirmationInput, setPasswordConfirmationInput] = useState('');
 
-    useEffect( () => {
-        async function sendUpdate(){
+    useEffect(() => {
+        async function getDetails(){
             try {
                 const response = await fetch("http://localhost:3001/me", {
                     method : 'GET',
@@ -27,144 +36,139 @@ function Details({id, state, description}) {
                 console.log(`received details`, data);
 
                 setUsername(data.username);
+                setUsernameInput(data.username);
+
                 setEmail(data.email);
+                setEmailInput(data.email);
 
             } catch(error){
                 console.log("could not get details");
                 console.log(error);
             }
-        }  
-        sendUpdate();
-    });
+        };  
+        getDetails();
+    }, []);
 
     const enableEditing = () => {
         setEditing(true);
-    }
+    };
 
     const discardChanges = () => {
         setEditing(false);
-    }
+    };
 
     const saveChanges = () => {
-        // console.log(`save`);
-        // setEditing(false);
+        setUpdating(true);
 
-        // async function sendUpdate(){
-        //     try {
-        //         const response = await fetch("http://localhost:3001/todo/" + id, {
-        //             method : 'PATCH',
-        //             headers : {'Content-Type': 'application/json'},
-        //             body: JSON.stringify({
-        //                 description: descriptionInput
-        //             })
-        //         });
-        
-        //         const data = await response.json();
-        //         console.log(data);
+        async function sendUpdate(){
+            const payload = {};
 
-        //         //update context
-        //         const newItems = items.map(item => {
-        //             if(item.id === _id){
-        //                 return {
-        //                     ...item,
-        //                     description: descriptionInput
-        //                 }
-        //             } else {
-        //                 return item;
-        //             }
-        //         });
-        //         setContextList(newItems);
-        //         setDescription(data.description);
+            if(passwordInput !== ''){
+                if(passwordInput === passwordConfirmationInput){
+                    payload.password = passwordInput;
+                } else {
+                    setUpdating(false);
+                    setFailMessage('Confirmation password doesn\'t match new password.');
+                    return;
+                }
+            }
 
-        //         console.log(items);
+            if(emailInput !== email){
+                payload.email = emailInput;
+            }
 
-        //     } catch(error){
-        //         console.log("could not update task");
-        //         console.log(error);
-        //         setDescriptionInput(_description);
-        //     }
-        // }
-        // sendUpdate();
-    }
+            if(Object.keys(payload).length === 0){
+                setUpdating(false);                
+                setFailMessage('Nothing to update.');                
+                return;
+            }
+            
+            setEditing(false);
 
-    const deleteItem = () => {
-        async function sendDelete(){
             try {
-                // const response = await fetch("http://localhost:3001/todo/" + id, {
-                //     method : 'DELETE',
-                //     headers : {'Content-Type': 'application/json'}
-                // });
+                const response = await fetch("http://localhost:3001/me", {
+                    method : 'PATCH',
+                    headers : {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer '+ token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                setUpdating(false);
         
-                // const data = await response.json();
+                const data = await response.json();
+                setUsername(data.username);
+                setUsernameInput(data.username);
 
-                // console.log(`received delete`, data);
+                setEmail(data.email);
+                setEmailInput(data.email);
 
-                // if(response.status === 200){
-                //     setOpen(false);
-                    
-                // } else if(response.status === 404){
-                //     console.log(`TODO: not found; implement feedback behavior`);    
-                // } else {
-                //     console.log("TODO: failed; implement feedback behavior");
-                // }
+                setSuccessMessage('Details edited succesfully!');
+                
             } catch(error){
-                console.log("could not delete task");
+                console.log("could not update task");
                 console.log(error);
             }
-        }  
-        sendDelete();
+        }
+        sendUpdate();
     }
 
-    const handleCheckboxClick = (e) => {
-        
-        // const newIsComplete = isComplete === 'COMPLETE' ? 'INCOMPLETE' : 'COMPLETE';
-        // setComplete(newIsComplete);
-
-        
-    }
-  
     return (
         <Container>
             <Row>
-                {
+                <Form>
+                    <FloatingLabel controlId="usernameInput" label="Username" className="mb-3">
+                        <Form.Control required type="text" value={usernameInput} disabled
+                            onChange={(e) => setUsernameInput(e.target.value)}
+                        />
+                    </FloatingLabel>
+                    <FloatingLabel controlId="emailInput" label="Email address" className="mb-3">
+                        <Form.Control required type="text" value={emailInput} disabled={!isEditing}
+                            onChange={(e) => setEmailInput(e.target.value)}
+                        />
+                    </FloatingLabel>
+                    <FloatingLabel controlId="passwordInput" label="Password" className="mb-3">
+                        <Form.Control required type="password" value={passwordInput} className="mb-3" disabled={!isEditing}
+                            onChange={(e) => setPasswordInput(e.target.value)}
+                        />
+                    </FloatingLabel>
+                    {
                     isEditing ?
-                    <>
-                    <Form>
-                        <Form.Group controlId='emailInput'>
-                            <Form.Control required type="text"
-                                value={emailInput} 
-                                onChange={(e) => setEmailInput(e.target.value)}
-                            />
-                        </Form.Group>
-                        <Form.Group controlId='passwordInput'>
-                            <Form.Control required type="password"
-                                value={passwordInput} 
-                                onChange={(e) => setPasswordInput(e.target.value)}
-                            />
-                        </Form.Group>
-                        <Form.Group controlId='passwordConfirmationInput'>
-                            <Form.Control required type="password"
-                                value={passwordConfirmationInput} 
+                        <FloatingLabel controlId="passwordInput" label="Confirm the new password" className="mb-3">
+                            <Form.Control required type="password" value={passwordConfirmationInput} className="mb-3" disabled={!isEditing}
                                 onChange={(e) => setPasswordConfirmationInput(e.target.value)}
                             />
-                        </Form.Group>
-                    </Form>
-                        <Button variant='success' className='m-1' onClick={() => {saveChanges()}}>
-                            <i className="bi bi-floppy"></i>
-                        </Button>
-                        <Button variant='secondary' className='m-1' onClick={() => {discardChanges()}}>
-                            <i className="bi bi-x"></i>
-                        </Button>
-                    </>
+                        </FloatingLabel>
                     :
-                    <>
-                        <span className="my-2">{username}</span>
-                        <span className="my-2">{email}</span>
-                        <Button className='m-1' disabled={false } onClick={() => {enableEditing()}}>
-                            <i className="bi bi-pencil-square"></i>
-                        </Button>
-                    </>
+                        <></>
+                    }                    
+                </Form>                    
+                {
+                isEditing ?
+                    <Row>
+                        <Col xs={6}>
+                            <Button variant='success' className='m-1 w-100' onClick={() => {saveChanges()}}>
+                                <i className="bi bi-floppy"></i></Button>
+                        </Col>
+                        <Col xs={6}>
+                            <Button variant='secondary' className='m-1 w-100' onClick={() => {discardChanges()}}>
+                                <i className="bi bi-x"></i></Button>
+                        </Col>                        
+                    </Row>
+                :
+                    <Row>
+                        <Col xs={12}>
+                            <Button className='m-1 w-100' disabled={false } onClick={() => {enableEditing()}}>
+                                <i className="bi bi-pencil-square"></i></Button>
+                        </Col>
+                    </Row>
                 }
+            </Row>
+            <Row>
+                <Spinner className={isUpdating ? "d-block mt-3" : "d-none"} animation="border" variant="primary" />
+                <FeedbackMessage variant="success" message={successMessage}/>
+                <FeedbackMessage variant="warning" message={failMessage}/>
             </Row>
         </Container>
     );

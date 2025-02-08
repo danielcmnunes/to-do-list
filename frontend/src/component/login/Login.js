@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Container, Card, Row } from 'react-bootstrap';
-
-import Spinner from 'react-bootstrap/Spinner';
-import Alert from 'react-bootstrap/Alert';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import { Container, Card, Row, Button, Spinner, Alert, Form, FloatingLabel } from 'react-bootstrap';
 import '/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import { AuthContext } from '../context/AuthContext.js';
+
+import FeedbackMessage from '../util/FeedbackMessage';
 
 function Login() {
     const {token, setToken, isLoggedIn, setLoggedIn} = useContext(AuthContext);
@@ -18,6 +17,8 @@ function Login() {
 
     const [successMessage, setSuccessMessage] = useState('');
     const [failMessage, setFailMessage] = useState(false);
+
+    const SUCCESS_DURATION = 4000;
 
     useEffect(() => {
         setUsername("daniel");
@@ -45,7 +46,9 @@ function Login() {
             setSuccessMessage('Logged in.');
             setLoggingIn(false);
             
-            setLoggedIn(true);
+            setTimeout(() => {
+                setLoggedIn(true);
+            }, SUCCESS_DURATION);
 
         } catch(error){
             setLoggingIn(false);
@@ -56,22 +59,23 @@ function Login() {
 
     return(
     <>        
-        <form onSubmit={attemptLogin}>
-            <div className="mb-3">
-                <input type="text" placeholder="Username" required value={username} onChange={(e) => setUsername(e.target.value)}/>
-            </div>
-            <div className="mb-3">
-            <input type="password" placeholder="Password" required value={password} onChange={(e) => setPassword(e.target.value)}/>
-            </div>
-            <div className="mb-3">
-                <button type="submit">Log in</button>
-            </div>
-            <div className="mb-3">                    
-                <Spinner className={isLoggingIn ? "d-block mt-3" : "d-none"} animation="border" variant="primary" />
-                <Alert variant="success" className={successMessage.length > 0 ? "d-block mt-3" : "d-none"}>{successMessage}</Alert>					
-                <Alert variant="warning" className={failMessage.length > 0 ? "d-block mt-3" : "d-none"}>{failMessage}</Alert>
-            </div>
-        </form>
+        <Form onSubmit={attemptLogin}>
+            <FloatingLabel controlId="username" label="Username" className="mb-3">
+                <Form.Control required type="text" value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+            </FloatingLabel>
+            <FloatingLabel controlId="password" label="Password" className="mb-3">
+                <Form.Control required type="password" value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+            </FloatingLabel>
+            <Button className='w-100 mb-3' type="submit">Login</Button>
+
+            <Spinner className={isLoggingIn ? "d-block my-3" : "d-none"} animation="border" variant="primary" />
+            <FeedbackMessage variant="success" message={successMessage} duration={SUCCESS_DURATION}/>
+            <FeedbackMessage variant="warning" message={failMessage}/>
+        </Form>
     </>
     );
 }

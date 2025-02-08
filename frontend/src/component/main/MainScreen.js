@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Container, Row, Col, Button, ButtonGroup } from 'react-bootstrap';
+import React, { useState, useContext } from 'react';
+import { Container, Row, Button, ButtonGroup } from 'react-bootstrap';
 
 import '/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -17,7 +17,7 @@ function MainScreen() {
     const [items, setItems] = useState([]);
     const [hideCompleted, setHideCompleted] = useState(false);
     const [sortingOrder, setSortingOrder] = useState('default');
-    const {token, setToken, isLoggedIn, setLoggedIn} = useContext(AuthContext);
+    const {setToken, setLoggedIn} = useContext(AuthContext);
     const [showDetails, setShowDetails] = useState(false);
 
     const logout = async () => {

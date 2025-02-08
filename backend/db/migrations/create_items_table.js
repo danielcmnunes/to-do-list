@@ -4,14 +4,14 @@
  */
 exports.up = function(knex) {
     return knex.schema.
-        createTable('users', function (table) {
+        createTable('items', function (table) {
             table.increments('id');
-            table.string('username');
-            table.string('email');
-            table.string('password');
-            table.string('token');
+            table.string('userId');
+            table.enu('state', ['INCOMPLETE', 'COMPLETE']);
+            table.string('description');
             table.datetime('createdAt');
-            table.datetime('lastLogin');
+            table.datetime('completedAt').defaultTo(null);
+            table.unique('description')
         });
 };
 
@@ -21,5 +21,5 @@ exports.up = function(knex) {
  */
 exports.down = function(knex) {
     return knex.schema
-        .dropTable('users');
+        .dropTable('items');
 };

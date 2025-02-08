@@ -22,7 +22,7 @@ function Login() {
 
     useEffect(() => {
         setUsername("daniel");
-        setPassword("123");
+        setPassword("1234");
         console.log("test: auto fill");
     }, []);
 

@@ -2,26 +2,62 @@
 
 const Jwt = require('@hapi/jwt');
 const Hapi = require('@hapi/hapi');
-const TodoController = require('./todo/todo');
-const AuthController = require('./auth/authcontroller');
+const Authentication = require('./auth/Authentication');
 const DatabaseWrapper = require('./database/database');
 
+const PostLogin = require('./routes/PostLogin');
+const PostLogout = require('./routes/PostLogout');
+const PostUsers = require('./routes/PostUsers');
+const GetMe = require('./routes/GetMe');
+const PatchMe = require('./routes/PatchMe');
+const GetTodos = require('./routes/GetTodos');
+const PostTodos = require('./routes/PostTodos');
+const PatchTodo = require('./routes/PatchTodo');
+const DeleteTodo = require('./routes/DeleteTodo');
+
+const Inert = require('@hapi/inert');
+const Vision = require('@hapi/vision');
+const HapiSwagger = require('hapi-swagger');
+
 const init = async () => {
-    const db = new DatabaseWrapper();
 
     const server = Hapi.server({
         port: 3001,
         host: 'localhost',
         routes: {
             cors: {
-                origin: ['*'], //nao restringir ao localhost, para poder usar a partir do exterior
-                // credentials: true, //TODO fix
+                origin: ['*'], //using localhost will only make accept same machine connections?
             },
         },
     });
+    
+    const db = new DatabaseWrapper();
+    server.db = db;
 
+    /**
+     * Swagger documentation
+     */
+    const swaggerOptions = {
+        info: {
+            title: 'Test API Documentation',
+            version: "1.0",
+        }
+    };
+
+    await server.register([
+        Inert,
+        Vision,
+        {
+            plugin: HapiSwagger,
+            options: swaggerOptions
+        }
+    ]);
+
+    /**
+     * JSON Web Tokens
+     */
     await server.register(Jwt);
-    server.auth.strategy('todo_list_jwt_strategy', 'jwt', AuthController.getStrategy(db));
+    server.auth.strategy('todo_list_jwt_strategy', 'jwt', Authentication.getStrategy(db));
     server.auth.default('todo_list_jwt_strategy');
 
     function printRequest(request){
@@ -38,169 +74,23 @@ const init = async () => {
     /**
      * To-do routes
      */
-
-    server.route({
-        method: 'POST',
-        path: '/todos',
-        handler: async (request, h) => {
-            printRequest(request);
-
-            const result = await TodoController.post(db, request.payload);
-
-            if(result.error){
-                return h.response('failed').code(400);
-            } else {                    
-                return h.response(result.value).code(201);
-            }
-        }
-    });
-
-    server.route({
-        method: 'GET',
-        path: '/todos',
-        handler: async (request, h) => {
-            printRequest(request);
-
-            const result = await TodoController.get(db, request.query);
-
-            if(result.error){
-                return h.response("failed").code(400);
-            } else {                    
-                return h.response(result.value).code(200);
-            }
-        }
-    });
-
-    server.route({
-        method: 'PATCH',
-        path: '/todo/{id}',
-        handler: async (request, h) => {
-            printRequest(request);
-
-            const result = await TodoController.edit(db, request.params, request.payload);
-
-            if(result.error){
-                return h.response('failed').code(400);
-            } else {                    
-                return h.response(result.value).code(200);
-            }
-        }
-    });
-
-    server.route({
-        method: 'DELETE',
-        path: '/todo/{id}',
-        handler: async (request, h) => {
-            printRequest(request);
-            
-            const result = await TodoController.del(db, request.params);
-            if(result === 1){
-                return h.response([]).code(200);
-            } else {
-                return h.response([]).code(404);
-            }
-        }
-    });
+    GetTodos(server);
+    PostTodos(server);
+    PatchTodo(server);
+    DeleteTodo(server);
 
     /**
      * Authentication routes
      */
-    //TODO check response codes
-
-    server.route({
-        method: 'POST',
-        path: '/login',
-        options: {
-            auth: false,
-            handler: async (request, h) => {
-                printRequest(request);
-                
-                const result = await AuthController.login(db, request.payload);
+    PostLogin(server);
+    PostLogout(server);
+    PostUsers(server);
     
-                if(result.error){
-                    return h.response('failed').code(400);
-                } else {                    
-                    return h.response(result.value).code(200);
-                }
-            }
-        }
-    });
-
-    server.route({
-        method: 'POST',
-        path: '/logout',
-        options: {
-            auth: false,
-            handler: async (request, h) => { 
-                printRequest(request);
-
-                //TODO update session state to "logged out"
-
-                h.response(result.value).code(200);
-            }
-        }
-    });
-    
-    server.route({
-        method: 'POST',
-        path: '/users',
-        options: {
-            auth: false,
-            handler: async (request, h) => {
-                printRequest(request);
-                
-                const result = await AuthController.register(db, request.payload);
-
-                if(result.error){
-                    return h.response('failed').code(400);
-                } else {                    
-                    return h.response(result.value).code(200);
-                }
-            }
-        }
-    });
-
-    server.route({
-        method: 'GET',
-        path: '/me',
-        options: {
-            auth: { 
-                strategy: 'todo_list_jwt_strategy'
-            },
-            handler: async (request, h) => {
-                printRequest(request);
-                
-                const result = await AuthController.details(db, h.request);
-
-                if(result.error){
-                    return h.response('failed').code(400);
-                } else {
-                    return h.response(result.value).code(200);
-                }
-            }
-        }
-    });
-
-    server.route({
-        method: 'PATCH',
-        path: '/me',
-        options: {
-            auth: {
-                strategy: 'todo_list_jwt_strategy'
-            },
-            handler: async (request, h) => {
-                printRequest(request);
-                
-                const result = await AuthController.edit(db, h.request);
-    
-                if(result.error){
-                    return h.response('failed').code(400);
-                } else {
-                    return h.response(result.value).code(200);
-                }
-            }
-        }
-    });
+    /**
+     * Details routes
+     */
+    GetMe(server);
+    PatchMe(server);
 
     await server.start();
     console.log('Server running on %s', server.info.uri);

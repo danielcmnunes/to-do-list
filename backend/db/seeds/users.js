@@ -7,19 +7,24 @@ exports.seed = async function(knex) {
   await knex('users').del()
   await knex('users').insert([
     {
+      id: 1,
       username: 'daniel', email: 'test@example.com', 
-      password: '123', token: '', 
-      createdAt: "2025-06-02T08:24:31.567Z"
+      password: '123'
     },
     {
+      id: 2,
+      username: 'daniel2', email: 'test2@example.com', 
+      password: '123'
+    },
+    {
+      id: 3,
       username: 'joao silva', email: 'joao@example.com', 
-      password: '123456',  token: '', 
-      createdAt: "2025-06-02T08:25:31.897Z"
+      password: '123456'
     },
     {
+      id: 4,
       username: 'maria silva', email: 'maria@example.com', 
-      password: '12345678', token: '', 
-      createdAt: "2025-06-02T08:26:31.453Z"
+      password: '12345678'
     }
   ]);
 };

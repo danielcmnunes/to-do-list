@@ -4,13 +4,11 @@
  */
 exports.up = function(knex) {
     return knex.schema.
-        createTable('items', function (table) {
+        createTable('users', function (table) {
             table.increments('id');
-            table.enu('state', ['INCOMPLETE', 'COMPLETE']);
-            table.string('description');
-            table.datetime('createdAt');
-            table.datetime('completedAt').defaultTo(null);
-            table.unique('description')
+            table.string('username');
+            table.string('email');
+            table.string('password');
         });
 };
 
@@ -20,5 +18,5 @@ exports.up = function(knex) {
  */
 exports.down = function(knex) {
     return knex.schema
-        .dropTable('items');
+        .dropTable('users');
 };

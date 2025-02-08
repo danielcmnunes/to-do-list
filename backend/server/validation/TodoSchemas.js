@@ -1,8 +1,6 @@
 const Joi = require('joi');
 
-//TODO: description max length
-
-class JoiSchemas {
+class TodoSchemas {
     static genericResponse(){
         return Joi.object({
             id: 
@@ -59,7 +57,7 @@ class JoiSchemas {
     }
 
     static getResponse(){
-        return Joi.array().items(JoiSchemas.genericResponse());
+        return Joi.array().items(TodoSchemas.genericResponse());
     }
 
 
@@ -76,14 +74,14 @@ class JoiSchemas {
     }
 
     static postResponse(){
-        return JoiSchemas.genericResponse();
+        return TodoSchemas.genericResponse();
     }
 
 
     /**
      * PATCH
      */
-    static patchRequestId(){
+    static patchRequestParams(){
         return Joi.object({            
             id: 
                 Joi.number()
@@ -108,14 +106,22 @@ class JoiSchemas {
     }
 
     static patchResponse(){
-        return JoiSchemas.genericResponse();
+        return TodoSchemas.genericResponse();
     }
+
 
 
     /**
      * DELETE
      */
-
+    static deleteRequest(){
+        return Joi.object({            
+            id: 
+                Joi.number()
+                .integer()
+                .required()
+        });
+    }
 }
 
-module.exports = JoiSchemas;
+module.exports = TodoSchemas;

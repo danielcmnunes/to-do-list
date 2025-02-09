@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Container, Row, Col, Button, ButtonGroup, Form, InputGroup } from 'react-bootstrap';
-import TaskItem from './TaskItem';
+import React, { useContext } from 'react';
+import { Container } from 'react-bootstrap';
 import { TodoListDisplayContext } from '../context/TodoListDisplayContext.js';
 
 function ListFilter() {

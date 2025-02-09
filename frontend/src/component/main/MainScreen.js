@@ -10,7 +10,6 @@ import { AuthContext } from '../context/AuthContext.js';
 import TaskInput from './TaskInput.js';
 import TaskList from './TaskList.js';
 import ListFilter from './ListFilter.js';
-import ListSorting from './ListSorting.js';
 import Details from '../details/Details.js';
 
 function MainScreen() {

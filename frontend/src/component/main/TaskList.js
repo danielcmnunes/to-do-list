@@ -32,7 +32,7 @@ function TaskList() {
             }
         }
         fetchData();
-    }, [setContextList]);
+    }, [token, setContextList]);
 
     useEffect( () => {
 

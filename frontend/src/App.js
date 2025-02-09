@@ -1,7 +1,7 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState } from 'react';
 import { AuthContext } from './component/context/AuthContext.js';
 import LoginScreen from './component/login/LoginScreen.js';
 import MainScreen from './component/main/MainScreen.js';

@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext, useActionState } from 'react';
-import { Container, Row, Col, Button, Form, Spinner, Alert, FloatingLabel, Collapse } from 'react-bootstrap';
+import React, { useEffect, useState, useContext } from 'react';
+import { Container, Row, Col, Button, Form, Spinner, FloatingLabel } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
 import FeedbackMessage from '../util/FeedbackMessage';
 import PasswordStrengthBar from 'react-password-strength-bar';
@@ -13,7 +13,6 @@ function Details() {
     const [successMessage, setSuccessMessage] = useState('');
     const [failMessage, setFailMessage] = useState('');
 
-    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
 
     const [usernameInput, setUsernameInput] = useState('');
@@ -38,7 +37,6 @@ function Details() {
 
                 console.log(`received details`, data);
 
-                setUsername(data.username);
                 setUsernameInput(data.username);
 
                 setEmail(data.email);
@@ -50,7 +48,7 @@ function Details() {
             }
         };  
         getDetails();
-    }, []);
+    }, [token]);
 
     const enableEditing = () => {
         setEditing(true);
@@ -106,7 +104,7 @@ function Details() {
                 setUpdating(false);
         
                 const data = await response.json();
-                setUsername(data.username);
+                
                 setUsernameInput(data.username);
 
                 setEmail(data.email);

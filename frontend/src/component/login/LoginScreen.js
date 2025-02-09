@@ -1,8 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
-
-import Spinner from 'react-bootstrap/Spinner';
-import Alert from 'react-bootstrap/Alert';
+import { Row, Col } from 'react-bootstrap';
 import '/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 

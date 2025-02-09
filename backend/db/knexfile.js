@@ -10,6 +10,9 @@ module.exports = {
     connection: {
       filename: path.join(__dirname, 'db.sqlite3')
     },
+    seeds: {
+      directory: path.join(__dirname, './seeds'),
+    },
     useNullAsDefault: true
   },
 

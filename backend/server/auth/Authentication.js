@@ -2,7 +2,7 @@ const Jwt = require('@hapi/jwt');
 
 class Authentication {}
 
-Authentication.getStrategy = function(database){
+Authentication.getStrategy = async function(database){
     return {
         keys: 'some_shared_secret',
         verify: {

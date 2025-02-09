@@ -14,8 +14,8 @@ function PatchTodo(server){
                 strategy: 'todo_list_jwt_strategy'
             },
             handler: async (request, h) => {
-                const result = await server.db.get(request.payload);
-
+                const result = await server.db.edit(request.params, request.payload);
+                
                 return result;
             },            
             validate: {

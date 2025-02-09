@@ -75,7 +75,10 @@ class DatabaseWrapper {
         }
     }
 
-    async edit(id, state, description){
+    async edit(params, payload){
+        const id = params.id;
+        const state = payload.state;
+        const description = payload.description;
         const update_data = {};
 
         if(state){
@@ -94,10 +97,12 @@ class DatabaseWrapper {
             update_data.description = description;
         }
 
+
         try {
             const result = await this.db('items')
                 .where({id: id})
                 .update(update_data, this.formatted_response);
+
             return result[0]
         } catch (err) {
             console.log(err);
@@ -160,9 +165,7 @@ class DatabaseWrapper {
                 .insert({ 
                     username: username,
                     email: email, 
-                    password: password, 
-                    createdAt: this.db.fn.now(),
-                    lastLogin: this.db.fn.now()
+                    password: password
                 }, ['username']);
             return result[0];
         } catch (err) {

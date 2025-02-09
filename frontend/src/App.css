@@ -38,7 +38,7 @@
 }
 
 input[type="checkbox"] {
-  transform: scale(1);
+  transform: scale(3);
 }
 
 .feedback-message {

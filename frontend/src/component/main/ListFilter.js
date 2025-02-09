@@ -12,7 +12,7 @@ function ListFilter() {
 
     return (
         <Container className='d-flex justify-content-start'> 
-            <label className='me-1'>Hide completed</label>
+            <label className='me-3'>Hide completed</label>
             <input type="checkbox" checked={hideCompleted} onChange={handleCheckboxClick}></input>
         </Container>
     );

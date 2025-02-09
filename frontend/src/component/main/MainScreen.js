@@ -25,7 +25,7 @@ function MainScreen() {
         setToken();
     };
 
-    const handleShowDetailsClick = () => {
+    const handleSwitchDetails = () => {
         const newValue = !showDetails;
         setShowDetails(newValue);
         console.log(showDetails);
@@ -36,13 +36,13 @@ function MainScreen() {
     <TodoListContext.Provider value={{items, setContextList: setItems}}>
         <TodoListDisplayContext.Provider value={{hideCompleted, setHideCompleted, sortingOrder, setSortingOrder }}>
             <Container>
-                <Row className='d-flex justify-content-between my-3'>
+                <Row className='d-flex justify-content-between my-3 ml-0 mr-0'>
                     <ButtonGroup>
-                        <Button variant='primary' className='' onClick={() => { handleShowDetailsClick() }}> 
+                        <Button variant='primary' className='' onClick={() => { handleSwitchDetails() }} disabled={showDetails} > 
                             <label className='me-1'>Details</label>
                             <i className="bi bi-person-circle"></i>
                         </Button>
-                        <Button disabled>
+                        <Button onClick={() => { handleSwitchDetails() }} disabled={!showDetails} >
                             To Do App
                         </Button>         
                         <Button variant='primary' onClick={() => { logout() }}> 
@@ -58,9 +58,8 @@ function MainScreen() {
                 </>
                 :                
                 <>
-                    <Row> <ListSorting/> </Row>
-                    <Row> <TaskInput/> </Row>
-                    <Row> <TaskList/> </Row>
+                    <Row className='mt-3'> <TaskInput/> </Row>
+                    <Row className='mt-3'> <TaskList/> </Row>
                     <Row className='mt-3'> <ListFilter/></Row>
                 </>
                 }

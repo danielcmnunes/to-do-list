@@ -161,30 +161,30 @@ function TaskItem({id, state, description}) {
   
     return (
         <Collapse in={open} dimension='height' unmountOnExit={true} onExited={updateContext}>
-        <Row className='bg-light border'>
-            <Col xs={2} lg={1}>
-                <input type="checkbox" checked={isComplete === 'COMPLETE'} onChange={handleCheckboxClick}></input>
+        <Row className='bg-light border-bottom mx-1'>
+            <Col xs={1} className='d-table align-middle'>
+                <div className='d-table-cell align-middle'>
+                    <input type="checkbox" checked={isComplete === 'COMPLETE'} onChange={handleCheckboxClick}></input>
+                </div>
             </Col>
-            <Col xs={6} lg={9}>
-                <Row>
-                    {
-                        isEditing ?
-                        <>
-                            <Form.Group controlId='descriptionInput'>
-                                <Form.Control required type="text"
-                                    value={descriptionInput} 
-                                    onChange={(e) => setDescriptionInput(e.target.value)}
-                                />
-                            </Form.Group>
-                        </>
-                        :
-                        <>
-                            <span className="my-2" style={descriptionStyle}>{_description}</span>
-                        </>
-                    }
-                </Row>                              
+            <Col sm={6} md={8} lg={9} className='d-table align-middle'>
+                {
+                    isEditing ?
+                    <>
+                        <Form.Group controlId='descriptionInput'>
+                            <Form.Control required type="text"
+                                value={descriptionInput} 
+                                onChange={(e) => setDescriptionInput(e.target.value)}
+                            />
+                        </Form.Group>
+                    </>
+                    :
+                    <div className='d-table-cell align-middle'>
+                        <span style={descriptionStyle}>{_description}</span>
+                    </div>                  
+                }                            
             </Col>
-            <Col xs={4} lg={2}>
+            <Col sm={5} md={3} lg={2} className='mr-0'>
                 {
                     isEditing ?
                     <>                        

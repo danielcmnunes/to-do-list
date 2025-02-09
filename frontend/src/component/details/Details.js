@@ -124,7 +124,11 @@ function Details() {
 
     return (
         <Container>
-            <Row>
+            <Row className='justify-content-center'>
+                <Col sm={8} md={6} lg={4}>
+                <Row className="mb-3">
+                    <strong>Account Details</strong>
+                </Row>
                 <Form>
                     <FloatingLabel controlId="usernameInput" label="Username" className="mb-3">
                         <Form.Control required type="text" value={usernameInput} disabled
@@ -160,23 +164,24 @@ function Details() {
                 {
                 isEditing ?
                     <Row>
-                        <Col xs={6}>
+                        <Col>
                             <Button variant='success' className='m-1 w-100' onClick={() => {saveChanges()}}>
                                 <i className="bi bi-floppy"></i></Button>
                         </Col>
-                        <Col xs={6}>
+                        <Col>
                             <Button variant='secondary' className='m-1 w-100' onClick={() => {discardChanges()}}>
                                 <i className="bi bi-x"></i></Button>
                         </Col>                        
                     </Row>
                 :
                     <Row>
-                        <Col xs={12}>
+                        <Col>
                             <Button className='m-1 w-100' disabled={false } onClick={() => {enableEditing()}}>
                                 <i className="bi bi-pencil-square"></i></Button>
                         </Col>
                     </Row>
                 }
+                </Col>
             </Row>
             <Row>
                 <Spinner className={isUpdating ? "d-block mt-3" : "d-none"} animation="border" variant="primary" />

@@ -14,21 +14,23 @@ import Register from './Register';
 function LoginScreen() {
 
     return(
-        <Container className='w-25'>
-            <Row className='mb-3'>
-                <Col xs={12}>
-                    <i className="bi bi-card-checklist mb-0" style={{'font-size': '15vw'}}></i>
+        <>
+            <Row className='justify-content-center'>
+                <Col sm={10} md={8} lg={6} xl={4}>
+                    <Row>
+                        <i className="bi bi-card-checklist mb-0" style={{'font-size': '15vw'}}></i>
+                    </Row>
+                    <Tabs defaultActiveKey="login" id="uncontrolled-tab-example" className="mb-3" fill>
+                        <Tab eventKey="login" title="Login">
+                            <Login/>
+                        </Tab>
+                        <Tab eventKey="register" title="Register">
+                            <Register/>
+                        </Tab>
+                    </Tabs>    
                 </Col>
-            </Row>
-            <Tabs defaultActiveKey="login" id="uncontrolled-tab-example" className="mb-3" fill>
-                <Tab eventKey="login" title="Login">
-                    <Login/>
-                </Tab>
-                <Tab eventKey="register" title="Register">
-                    <Register/>
-                </Tab>
-            </Tabs>            
-        </Container>
+            </Row>                    
+        </>
     );
 }
 export default LoginScreen;

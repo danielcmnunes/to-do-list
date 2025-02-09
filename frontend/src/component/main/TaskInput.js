@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import {TodoListContext} from '../context/TodoListContext.js';
 import { AuthContext } from '../context/AuthContext.js';
+import ListSorting from './ListSorting.js';
 
 function TaskInput() {
     const {items, setContextList} = useContext(TodoListContext);
@@ -39,26 +40,27 @@ function TaskInput() {
     };
 
     return (
-        <Container className='m-3'>
-            <Form onSubmit={handleSubmit}>
-                <Row>
-                    <Col xs={7} md={9} lg={10}>
-                        <Form.Group controlId='textInput'>
-                            <Form.Control required type="text" 
-                                placeholder="Write new task here..."
-                                value={textInput} 
-                                onChange={(e) => setTextInput(e.target.value)}    
-                            />
-                        </Form.Group>
-                    </Col>
-                    <Col xs={5} md={3} lg={2}>
-                        <Button variant="primary" type="submit">
-                            Create
-                        </Button>
-                    </Col>
-                </Row>
-            </Form>
-        </Container>
+        <>
+            <Col xs={1} >
+                <ListSorting/>
+            </Col>
+            <Col sm={6} md={8} lg={9} className="ml-0 mr-0">
+                <Form onSubmit={handleSubmit}  className='mx-0'>
+                    <Form.Group controlId='textInput'>
+                        <Form.Control required type="text" 
+                            placeholder="Write new task here..."
+                            value={textInput} 
+                            onChange={(e) => setTextInput(e.target.value)}    
+                        />
+                    </Form.Group>
+                </Form>
+            </Col>
+            <Col sm={5} md={3} lg={2} className="mx-0">
+                <Button className="w-100" variant="primary" type="submit">
+                    Create
+                </Button>
+            </Col>
+        </>
     );
 }
 

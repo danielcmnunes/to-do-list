@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext, useActionState } from 'react';
 import { Container, Row, Col, Button, Form, Spinner, Alert, FloatingLabel, Collapse } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
 import FeedbackMessage from '../util/FeedbackMessage';
+import PasswordStrengthBar from 'react-password-strength-bar';
 
 function Details() {
     const {token} = useContext(AuthContext);
@@ -19,6 +20,8 @@ function Details() {
     const [emailInput, setEmailInput] = useState('');
     const [passwordInput, setPasswordInput] = useState('');    
     const [passwordConfirmationInput, setPasswordConfirmationInput] = useState('');
+    
+    const [passwordScore, setPasswordScore] = useState(0);
 
     useEffect(() => {
         async function getDetails(){
@@ -64,6 +67,11 @@ function Details() {
             const payload = {};
 
             if(passwordInput !== ''){
+                if(passwordScore < 4){
+                    setFailMessage('Please provide a stronger password.');
+                    return;
+                }
+
                 if(passwordInput === passwordConfirmationInput){
                     payload.password = passwordInput;
                 } else {
@@ -135,11 +143,16 @@ function Details() {
                     </FloatingLabel>
                     {
                     isEditing ?
-                        <FloatingLabel controlId="passwordInput" label="Confirm the new password" className="mb-3">
-                            <Form.Control required type="password" value={passwordConfirmationInput} className="mb-3" disabled={!isEditing}
-                                onChange={(e) => setPasswordConfirmationInput(e.target.value)}
-                            />
-                        </FloatingLabel>
+                        <>
+                            <PasswordStrengthBar password={passwordInput} minLength={8} 
+                                onChangeScore={(score) => { setPasswordScore(score); }}/>
+                                
+                            <FloatingLabel controlId="passwordInput" label="Confirm the new password" className="mb-3">
+                                <Form.Control required type="password" value={passwordConfirmationInput} className="mb-3" disabled={!isEditing}
+                                    onChange={(e) => setPasswordConfirmationInput(e.target.value)}
+                                />
+                            </FloatingLabel>
+                        </>
                     :
                         <></>
                     }                    

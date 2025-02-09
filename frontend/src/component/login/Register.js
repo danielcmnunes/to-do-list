@@ -4,6 +4,7 @@ import '/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { AuthContext } from '../context/AuthContext';
 import FeedbackMessage from '../util/FeedbackMessage';
+import PasswordStrengthBar from 'react-password-strength-bar';
 
 function Register() {
     const {setToken, setLoggedIn} = useContext(AuthContext);
@@ -19,6 +20,8 @@ function Register() {
     
     const SUCCESS_DURATION = 4000;
 
+    const [passwordScore, setPasswordScore] = useState(0);
+
     useEffect(() => {
         setUsername("Joaozinho");
         setEmail("test@example.com");
@@ -28,6 +31,11 @@ function Register() {
 
     const attemptRegister = async (e) => {
         e.preventDefault();
+
+        if(passwordScore < 4){
+            setFailMessage('Please provide a stronger password.');
+            return;
+        }
         setRegistering(true);
     
         try {
@@ -79,6 +87,9 @@ function Register() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
             </FloatingLabel>
+            <PasswordStrengthBar password={password_registration} minLength={8} 
+                onChangeScore={(score) => { setPasswordScore(score); }}/>
+
             <Button className='w-100 mb-3' type="submit">Register</Button>
 
             <Spinner className={isRegistering ? "d-block mt-3" : "d-none"} animation="border" variant="primary" />

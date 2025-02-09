@@ -14,12 +14,10 @@ import Register from './Register';
 function LoginScreen() {
 
     return(
-    <>
-        <Container>
+        <Container className='w-25'>
             <Row className='mb-3'>
                 <Col xs={12}>
-                    <i className="bi bi-card-checklist" style={{'font-size': '25vw'}}></i>
-                    <p><strong>TO-DO List App</strong></p>
+                    <i className="bi bi-card-checklist mb-0" style={{'font-size': '15vw'}}></i>
                 </Col>
             </Row>
             <Tabs defaultActiveKey="login" id="uncontrolled-tab-example" className="mb-3" fill>
@@ -31,7 +29,6 @@ function LoginScreen() {
                 </Tab>
             </Tabs>            
         </Container>
-    </>
     );
 }
 export default LoginScreen;

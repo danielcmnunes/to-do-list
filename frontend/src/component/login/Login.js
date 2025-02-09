@@ -18,11 +18,11 @@ function Login() {
     const [successMessage, setSuccessMessage] = useState('');
     const [failMessage, setFailMessage] = useState(false);
 
-    const SUCCESS_DURATION = 4000;
+    const SUCCESS_DURATION = 2000;
 
     useEffect(() => {
         setUsername("daniel");
-        setPassword("1234");
+        setPassword("123");
         console.log("test: auto fill");
     }, []);
 
@@ -41,14 +41,18 @@ function Login() {
             });
     
             const data = await response.json();
-            setToken(data.token);
 
-            setSuccessMessage('Logged in.');
-            setLoggingIn(false);
+            if(data.token){
+                setLoggingIn(false);                
+                setToken(data.token);
+                setSuccessMessage('Logged in.');
+                
+                setTimeout(() => {
+                    setLoggedIn(true);
+                }, SUCCESS_DURATION);
+            }
+
             
-            setTimeout(() => {
-                setLoggedIn(true);
-            }, SUCCESS_DURATION);
 
         } catch(error){
             setLoggingIn(false);

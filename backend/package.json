@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "lab -v ./test/app.test.js",
     "test-auth": "lab -v ./test/auth.test.js",
     "test-details": "lab -v ./test/details.test.js",
     "test-todo": "lab -v ./test/todo.test.js",
     "test-todos": "lab -v ./test/todos.test.js",
     "lint": "eslint ./server/server.js",
-    "migrate": "knex migrate:latest --knexfile db/knexfile.js"
+    "migrate": "knex migrate:latest --knexfile db/knexfile.js",
+    "start": "node lib/start.js"
   },
   "author": "Daniel Nunes",
   "license": "ISC",
@@ -28,7 +28,8 @@
     "joi": "^17.13.3",
     "knex": "^3.1.0",
     "sqlite3": "^5.1.7",
-    "supertest": "^7.0.0"
+    "supertest": "^7.0.0",
+    "to-do-list": "file:"
   },
   "extends": [
     "eslint:recommended",

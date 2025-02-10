@@ -3,45 +3,7 @@
 const Lab = require('@hapi/lab');
 const { expect } = require('@hapi/code');
 const { afterEach, beforeEach, describe, it, before } = exports.lab = Lab.script();
-const { init } = require('../server/server');
-
-/**
- * Returns true if all properties in the expected_object are present 
- * and have the same value in the received_object.
- * @param {json} expected_object 
- * @param {json} received_object 
- */
-function comparePayloads(expected_object, received_object){
-    //different types
-    if(typeof expected_object != typeof received_object){
-        return false;
-    }    
-
-    //literals
-    if(typeof expected_object !== 'object'){
-        return expected_object === received_object;
-    }
-
-    const expected_object_keys = Object.keys(expected_object);
-
-    expected_object_keys.forEach( (key) => {
-        const expected_value = expected_object[key];
-        const received_value = received_object[key];
-
-        if(!expected_object_keys.includes(key)){
-            console.log(`failed to find ${key} in:`);
-            console.log(`${received_object}`);
-            return false;
-        }
-        
-        if(expected_value !== received_value){
-            console.log(`${expected_value} != in: ${received_value} for property ${key} in:`);
-            console.log(`${received_object}`);
-            return false;
-        }
-    });
-    return true;
-}
+const { init } = require('../lib/server');
 
 describe('GET and PATCH /me', () => {
     let server;

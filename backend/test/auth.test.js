@@ -3,7 +3,7 @@
 const Lab = require('@hapi/lab');
 const { expect } = require('@hapi/code');
 const { afterEach, beforeEach, describe, it, before } = exports.lab = Lab.script();
-const { init } = require('../server/server');
+const { init } = require('../lib/server');
 
 describe('POST /login', () => {
     let server;

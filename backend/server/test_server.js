@@ -25,9 +25,9 @@ const server = Hapi.server({
     routes: {
         cors: {
             origin: ['*'],
-            headers: ['Authorization'], // an array of strings - 'Access-Control-Allow-Headers'
-            exposedHeaders: ['Accept'], // an array of exposed headers - 'Access-Control-Expose-Headers',
-            additionalExposedHeaders: ['Accept'], // an array of additional exposed headers
+            // headers: ['Authorization'], // an array of strings - 'Access-Control-Allow-Headers'
+            // exposedHeaders: ['Accept'], // an array of exposed headers - 'Access-Control-Expose-Headers',
+            // additionalExposedHeaders: ['Accept'], // an array of additional exposed headers
             credentials: true            
         }
     },

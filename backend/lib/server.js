@@ -2,25 +2,31 @@
 
 const Jwt = require('@hapi/jwt');
 const Hapi = require('@hapi/hapi');
-const Authentication = require('./auth/Authentication');
-const DatabaseWrapper = require('./database/database');
+const DatabaseWrapper = require('../server/database/database');
 
-const PostLogin = require('./routes/PostLogin');
-const PostLogout = require('./routes/PostLogout');
-const PostUsers = require('./routes/PostUsers');
-const GetMe = require('./routes/GetMe');
-const PatchMe = require('./routes/PatchMe');
-const GetTodos = require('./routes/GetTodos');
-const PostTodos = require('./routes/PostTodos');
-const PatchTodo = require('./routes/PatchTodo');
-const DeleteTodo = require('./routes/DeleteTodo');
+const PostLogin = require('../server/routes/PostLogin');
+const PostLogout = require('../server/routes/PostLogout');
+const PostUsers = require('../server/routes/PostUsers');
+const GetMe = require('../server/routes/GetMe');
+const PatchMe = require('../server/routes/PatchMe');
+const GetTodos = require('../server/routes/GetTodos');
+const PostTodos = require('../server/routes/PostTodos');
+const PatchTodo = require('../server/routes/PatchTodo');
+const DeleteTodo = require('../server/routes/DeleteTodo');
 
 const Inert = require('@hapi/inert');
 const Vision = require('@hapi/vision');
 const HapiSwagger = require('hapi-swagger');
 
-const init = async () => {
 
+
+exports.init = async () => {
+    //avoid registering plugins and routes twice; won't work for swagger
+    // const registeredPlugins = Object.keys(server.registrations);
+    // if(registeredPlugins.length > 0){
+    //     await server.initialize();
+    //     return server;
+    // }
     const server = Hapi.server({
         port: 3001,
         host: 'localhost',
@@ -31,7 +37,7 @@ const init = async () => {
             },
         },
     });
-    
+        
     const database = new DatabaseWrapper();
     server.db = database;
 
@@ -53,7 +59,9 @@ const init = async () => {
                 grouping: 'tags'
             }
         }
-    ]);
+    ], {
+        once: true
+    });
 
     /**
      * JSON Web Tokens
@@ -83,7 +91,6 @@ const init = async () => {
     });
     server.auth.default('todo_list_jwt_strategy');
 
-
     /**
      * To-do routes
      */
@@ -105,8 +112,14 @@ const init = async () => {
     GetMe(server);
     PatchMe(server);
 
+    await server.initialize();
+    return server;
+};
+
+exports.start = async(server) => {
     await server.start();
-    console.log('Server running on %s', server.info.uri);
+    console.log(`Server running at: ${server.info.uri}`);
+    return server;
 };
 
 process.on('unhandledRejection', (err) => {
@@ -114,4 +127,10 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
 });
 
-init();
+// let env = process.env.NODE_ENV;
+// if(env !== 'test'){
+//     console.log("not in tests");
+//     init();
+// } else {
+//     console.log("testing mode");
+// }

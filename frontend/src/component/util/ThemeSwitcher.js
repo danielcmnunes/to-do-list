@@ -3,12 +3,13 @@ import { Form, Row, Col } from 'react-bootstrap';
 import { useCookies } from 'react-cookie';
 
 function ThemeSwitcher(){
-    const [theme, setTheme] = useState(undefined);
     const [cookie, setCookie] = useCookies(['theme-choice']);
+    const [theme, setTheme] = useState(undefined);
 
     useEffect( () => {
         if(cookie.theme === 'dark'){
             switchTheme('dark');
+            
         } else {
             switchTheme('light');
         }
@@ -33,6 +34,7 @@ function ThemeSwitcher(){
             <Col xs={1}>
                 <Form>
                     <Form.Check
+                        checked={theme === 'dark'}
                         type="switch"
                         onClick={handleClick}
                         label="Light/Dark"

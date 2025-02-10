@@ -53,7 +53,7 @@ describe('PATCH todo', { serial: true }, () => {
         const knex = require('knex');
         const knexConfig = require('../db/knexfile');
         const knexInstance = knex(knexConfig.development);
-        knexInstance.seed.run();
+        await knexInstance.seed.run();
     });
 
     beforeEach(async () => {
@@ -97,45 +97,44 @@ describe('PATCH todo', { serial: true }, () => {
         }
     });
 
+    // const payloads = [
+    //     {
+    //         description: 'modify target item state to COMPLETE ',
+    //         params: context.id,
+    //         payload: { state: 'COMPLETE'},
+    //         expectedCode: 200,
+    //         expectedResponse: {
+    //             id: context.id,
+    //             state: 'COMPLETE',
+    //             description: context.description,
+    //             createdAt: context.createdAt
+    //         }
+    //     }
+    // ];
 
-    const payloads = [
-        // {
-        //     description: 'modify target item state to COMPLETE ',
-        //     params: context.id,
-        //     payload: { state: 'COMPLETE'},
-        //     expectedCode: 200,
-        //     expectedResponse: {
-        //         id: context.id,
-        //         state: 'COMPLETE',
-        //         description: context.description,
-        //         createdAt: context.createdAt
-        //     }
-        // }
-    ];
-
-    payloads.forEach( ({description, params, payload, expectedCode, expectedResponse}) => {
-        it(description, async () => {
-            console.log(params, payload, expectedCode, expectedResponse);
+    // payloads.forEach( ({description, params, payload, expectedCode, expectedResponse}) => {
+    //     it(description, async () => {
+    //         console.log(params, payload, expectedCode, expectedResponse);
     
-            const res = server.inject({
-                method: 'PATCH',
-                url: '/todo/' + params,
-                payload: payload,
-                headers : {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer '+ token
-                }
-            });
+    //         const res = server.inject({
+    //             method: 'PATCH',
+    //             url: '/todo/' + params,
+    //             payload: payload,
+    //             headers : {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': 'Bearer '+ token
+    //             }
+    //         });
             
-            console.log("RECEIVED");
-            console.log(res);
+    //         console.log("RECEIVED");
+    //         console.log(res);
 
-            expect(res.statusCode).to.equal(expectedCode);
+    //         expect(res.statusCode).to.equal(expectedCode);
 
 
-            if(res.result){                
-                expect( comparePayloads(expectedResponse, res.result) ).to.equal(true);
-            }
-        });
-    });
+    //         if(res.result){                
+    //             expect( comparePayloads(expectedResponse, res.result) ).to.equal(true);
+    //         }
+    //     });
+    // });
 });

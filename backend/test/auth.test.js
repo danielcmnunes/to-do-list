@@ -12,7 +12,7 @@ describe('POST /login', () => {
         const knex = require('knex');
         const knexConfig = require('../db/knexfile');
         const knexInstance = knex(knexConfig.development);
-        knexInstance.seed.run();
+        await knexInstance.seed.run();
     });
 
     beforeEach(async () => {

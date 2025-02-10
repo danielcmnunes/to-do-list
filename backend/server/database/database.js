@@ -144,8 +144,6 @@ class DatabaseWrapper {
         const username = payload.username;
         const password = payload.password;
         
-        const hash = bcrypt.hashSync(password, saltRounds);
-
         try {
             const result = await this.db
                 .select('password')
@@ -201,11 +199,18 @@ class DatabaseWrapper {
         }
     }
 
-    async editDetails(validatedFields, username){
+    async editDetails(payload, username){
+        const password = payload.password;
+        
+        if(password){
+            const hash = bcrypt.hashSync(password, saltRounds);
+            payload.password = hash;
+        }
+
         try {
             const result = await this.db('users')
                 .where({'username': username})
-                .update(validatedFields, ['username', 'email']);
+                .update(payload, ['username', 'email']);
             return result[0];
         } catch (err) {
             console.error(err);

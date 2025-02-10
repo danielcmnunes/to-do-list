@@ -51,7 +51,7 @@ describe('POST todos', () => {
         const knex = require('knex');
         const knexConfig = require('../db/knexfile');
         const knexInstance = knex(knexConfig.development);
-        knexInstance.seed.run();
+        await knexInstance.seed.run();
     });
 
     beforeEach(async () => {
@@ -66,7 +66,7 @@ describe('POST todos', () => {
         const res = await server.inject({
             method: 'POST',
             url: '/login',
-            payload: { 'username': 'daniel', 'password': 'betterPassWord123' }
+            payload: { 'username': 'daniel', 'password': 'UhIjbciLEjVS' }
         });
         expect(res.statusCode).to.equal(200);
 
@@ -150,7 +150,7 @@ describe('GET todos', () => {
         const res = await server.inject({
             method: 'POST',
             url: '/login',
-            payload: { 'username': 'daniel', 'password': 'betterPassWord123' }
+            payload: { 'username': 'daniel', 'password': 'UhIjbciLEjVS' }
         });
         expect(res.statusCode).to.equal(200);
 

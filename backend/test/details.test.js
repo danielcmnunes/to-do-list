@@ -13,7 +13,7 @@ describe('GET and PATCH /me', () => {
         const knex = require('knex');
         const knexConfig = require('../db/knexfile');
         const knexInstance = knex(knexConfig.development);
-        knexInstance.seed.run();
+        await knexInstance.seed.run();
     });
 
     beforeEach(async () => {
@@ -65,6 +65,22 @@ describe('GET and PATCH /me', () => {
             },
             payload: {
                 'email': 'bananas@example.com'
+            }
+        });
+        expect(res.statusCode).to.equal(200);
+        expect(res.result).to.equal({
+            username: 'daniel',
+            email: 'bananas@example.com'
+        });
+    });
+
+    it("confirm the email is returned by the server", async () => {
+        const res = await server.inject({
+            method: 'GET',
+            url: '/me',
+            headers : {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+ token
             }
         });
         expect(res.statusCode).to.equal(200);

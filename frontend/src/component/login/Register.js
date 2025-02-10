@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Container, Card, Row, Spinner, Alert, Form, FloatingLabel, Button } from 'react-bootstrap';
+import React, { useState, useContext } from 'react';
+import { Row, Spinner, Form, FloatingLabel, Button } from 'react-bootstrap';
 import '/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { AuthContext } from '../context/AuthContext';
@@ -21,13 +21,6 @@ function Register() {
     const SUCCESS_DURATION = 4000;
 
     const [passwordScore, setPasswordScore] = useState(0);
-
-    useEffect(() => {
-        setUsername("Joaozinho");
-        setEmail("test@example.com");
-        setPassword("654_+321");
-        console.log("test: auto fill");
-    }, []);
 
     const attemptRegister = async (e) => {
         e.preventDefault();

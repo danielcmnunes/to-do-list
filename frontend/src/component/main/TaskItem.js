@@ -161,7 +161,7 @@ function TaskItem({id, state, description}) {
   
     return (
         <Collapse in={open} dimension='height' unmountOnExit={true} onExited={updateContext}>
-        <Row className='bg-light border-bottom mx-1'>
+        <Row className='border-bottom mx-1'>
             <Col xs={1} className='d-table align-middle'>
                 <div className='d-table-cell align-middle'>
                     <input type="checkbox" checked={isComplete === 'COMPLETE'} onChange={handleCheckboxClick}></input>

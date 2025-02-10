@@ -15,7 +15,7 @@ function FeedbackMessage({variant, message, duration}){
 
             return () => clearTimeout(timerId);
         }
-    }, [message]);
+    }, [message, duration]);
 
     return(        
         <div className={'feedback-message ' + (isOpen ? 'feedback-fade-in' : 'feedback-fade-out')}>

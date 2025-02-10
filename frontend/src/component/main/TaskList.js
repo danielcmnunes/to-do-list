@@ -12,7 +12,6 @@ function TaskList() {
     const {token} = useContext(AuthContext);
     
     useEffect(() => {
-        console.log(`asking list...`);
         async function fetchData(){
             try {
                 const response = await fetch("http://localhost:3001/todos", {

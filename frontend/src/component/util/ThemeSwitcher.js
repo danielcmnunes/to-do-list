@@ -6,6 +6,12 @@ function ThemeSwitcher(){
     const [cookie, setCookie] = useCookies(['theme-choice']);
     const [theme, setTheme] = useState(undefined);
 
+    const switchTheme = (newTheme) => {
+        setTheme(newTheme);
+        document.documentElement.setAttribute('data-bs-theme', newTheme);
+        setCookie('theme', newTheme);
+    }
+
     useEffect( () => {
         if(cookie.theme === 'dark'){
             switchTheme('dark');
@@ -13,13 +19,7 @@ function ThemeSwitcher(){
         } else {
             switchTheme('light');
         }
-    }, []);
-
-    const switchTheme = (newTheme) => {
-        setTheme(newTheme);
-        document.documentElement.setAttribute('data-bs-theme', newTheme);
-        setCookie('theme', newTheme);
-    }
+    },[]);
 
     const handleClick = () => {
         if (theme === 'light') {

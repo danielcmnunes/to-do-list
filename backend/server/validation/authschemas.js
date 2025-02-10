@@ -17,7 +17,7 @@ class AuthSchemas {
                 Joi.string()
                 .max(64)
                 .required()
-        });
+        }).label('Login Request');
     }
 
     static loginResponse(){
@@ -30,7 +30,7 @@ class AuthSchemas {
             token: 
                 Joi.string()
                 .required()
-        });
+        }).label('Login Response');
     }
 
 
@@ -47,7 +47,7 @@ class AuthSchemas {
             token: 
                 Joi.string()
                 .required()
-        });
+        }).label('Logout Request');
     }
 
     static logoutResponse(){
@@ -73,7 +73,7 @@ class AuthSchemas {
                 Joi.string()
                 .max(256)
                 .required()
-        });
+        }).label('Register Request');
     }
 
     static registerResponse(){
@@ -85,7 +85,7 @@ class AuthSchemas {
             token: 
                 Joi.string()
                 .required()
-        });
+        }).label('Register Response');
     }
 
 
@@ -103,7 +103,7 @@ class AuthSchemas {
                 Joi.string()
                 .max(256)
                 .required()
-        });
+        }).label('Details Response');
     }
 
 
@@ -121,7 +121,7 @@ class AuthSchemas {
                 Joi.string()
                 .max(64)
                 .optional()
-        });
+        }).label('Edit Request');
     }
 
     static editResponse(){
@@ -134,7 +134,7 @@ class AuthSchemas {
                 Joi.string()
                 .max(256)
                 .required()
-        });
+        }).label('Edit Response');
     }
 }
 

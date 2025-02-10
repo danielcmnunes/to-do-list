@@ -37,8 +37,22 @@
   }
 }
 
-input[type="checkbox"] {
-  transform: scale(3);
+.todo-item-checkbox {
+  input[type="checkbox"] {
+    transform: scale(3);
+  }
+}
+
+.hide-completed-checkbox {
+  input[type="checkbox"] {
+    transform: scale(2);
+  }
+}
+
+.theme-switcher {
+  input[type="checkbox"] {
+    transform: scale(1);
+  }
 }
 
 .feedback-message {

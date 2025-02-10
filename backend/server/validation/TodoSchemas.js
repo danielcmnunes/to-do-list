@@ -28,7 +28,7 @@ class TodoSchemas {
                 Joi.alternatives()
                 .try(Joi.string().isoDate(), Joi.valid(null))
                 .required()
-        });
+        }).label('Generic Item Response');
     }
 
 
@@ -53,7 +53,7 @@ class TodoSchemas {
                 .valid('createdAt')
                 .valid('completedAt')
                 .default('createdAt')
-        });
+        }).label('Get Request');
     }
 
     static getResponse(){
@@ -70,7 +70,7 @@ class TodoSchemas {
                 Joi.string()
                 .max(256)
                 .required()
-        });
+        }).label('Post Request');
     }
 
     static postResponse(){
@@ -87,7 +87,7 @@ class TodoSchemas {
                 Joi.number()
                 .integer()
                 .required()
-        });
+        }).label('Edit Request (Params)');
     }
 
     static patchRequestPayload(){
@@ -102,7 +102,7 @@ class TodoSchemas {
                 .max(256)
                 .optional()
 
-        }).or('state', 'description');
+        }).or('state', 'description').label('Edit Request (Payload)');;
     }
 
     static patchResponse(){
@@ -120,7 +120,7 @@ class TodoSchemas {
                 Joi.number()
                 .integer()
                 .required()
-        });
+        }).label('Delete Request');
     }
 }
 

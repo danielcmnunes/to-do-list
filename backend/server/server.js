@@ -38,20 +38,20 @@ const init = async () => {
     /**
      * Swagger documentation
      */
-    const swaggerOptions = {
-        info: {
-            title: 'Test API Documentation',
-            version: "1.0",
-        },
-        grouping: 'tags'
-    };
-
     await server.register([
         Inert,
         Vision,
         {
             plugin: HapiSwagger,
-            options: swaggerOptions
+            options: {
+                //jsonRoutePath: "/docs",
+                documentationPath: "/docs",
+                info: {
+                    title: 'Test API Documentation',
+                    version: "1.0",
+                },
+                grouping: 'tags'
+            }
         }
     ]);
 
@@ -70,7 +70,7 @@ const init = async () => {
             maxAgeSec: 14400, // 4 hours
             timeSkewSec: 15
         },
-        validate: async (artifacts, request, h) => {            
+        validate: async (artifacts, request, h) => {
             const user = await database.getUser(artifacts.decoded.payload.user);
             if (!user) {
                 return { isValid: false };
@@ -82,7 +82,6 @@ const init = async () => {
         }
     });
     server.auth.default('todo_list_jwt_strategy');
-
 
 
     /**

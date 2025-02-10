@@ -9,12 +9,12 @@ exports.seed = async function(knex) {
     {
       id: 1,
       username: 'daniel', email: 'test@example.com', 
-      password: '123'
+      password: '$2b$10$bNDXKjoEbfqSymevtWdxH.TNjUM4mGau6d800y5Zz.6bQHW4pwx1e'
     },
     {
       id: 2,
       username: 'daniel2', email: 'test2@example.com', 
-      password: '123'
+      password: '$2b$10$cUOhGNXz0xhqjxoDjaKuGu5j7/0Un6DqpmnUoAmbWHUHMmO4F4cPa'
     },
     {
       id: 3,
@@ -24,7 +24,7 @@ exports.seed = async function(knex) {
     {
       id: 4,
       username: 'maria silva', email: 'maria@example.com', 
-      password: '12345678'
+      password: '123456'
     }
   ]);
 };

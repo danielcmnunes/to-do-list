@@ -50,7 +50,7 @@ describe('POST /login', () => {
         },
         {
             description: 'login with correct credentials',
-            payload: { 'username': 'daniel', 'password': '123' },
+            payload: { 'username': 'daniel', 'password': 'UhIjbciLEjVS' },
             expectedCode: 200,
             expectedResponse: undefined
         }

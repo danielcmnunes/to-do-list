@@ -68,7 +68,7 @@ describe('PATCH todo', { serial: true }, () => {
         const res = await server.inject({
             method: 'POST',
             url: '/login',
-            payload: { 'username': 'daniel', 'password': '123' }
+            payload: { 'username': 'daniel', 'password': 'UhIjbciLEjVS' }
         });
         expect(res.statusCode).to.equal(200);
 

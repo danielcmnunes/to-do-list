@@ -66,7 +66,7 @@ describe('GET and PATCH /me', () => {
         const res = await server.inject({
             method: 'POST',
             url: '/login',
-            payload: { 'username': 'daniel', 'password': '123' }
+            payload: { 'username': 'daniel', 'password': 'UhIjbciLEjVS' }
         });
         expect(res.statusCode).to.equal(200);
 
@@ -135,7 +135,7 @@ describe('GET and PATCH /me', () => {
         const res = await server.inject({
             method: 'POST',
             url: '/login',
-            payload: { 'username': 'daniel', 'password': '123' }
+            payload: { 'username': 'daniel', 'password': 'UhIjbciLEjVS' }
         });
         expect(res.statusCode).to.equal(401);
 

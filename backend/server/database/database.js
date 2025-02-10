@@ -1,4 +1,6 @@
 const knex = require('knex');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 class DatabaseWrapper {
     constructor(){
@@ -141,14 +143,23 @@ class DatabaseWrapper {
     async checkUserPass(payload){
         const username = payload.username;
         const password = payload.password;
+        
+        const hash = bcrypt.hashSync(password, saltRounds);
 
         try {
             const result = await this.db
-                .select('username')
+                .select('password')
                 .from('users')
-                .where({username: username, password: password})
+                .where({username: username})
                 .first();
-            return result;
+
+            const match = await bcrypt.compare(password, result.password);
+
+            if(match){
+                return {username: username};
+            }
+
+            return {};
         } catch (err) {
             console.error(err);
             return {};
@@ -159,13 +170,15 @@ class DatabaseWrapper {
         const username = payload.username;
         const email = payload.email;
         const password = payload.password;
+
+        const hash = bcrypt.hashSync(password, saltRounds);
         
         try {
             const result = await this.db('users')
                 .insert({ 
                     username: username,
                     email: email, 
-                    password: password
+                    password: hash
                 }, ['username']);
             return result[0];
         } catch (err) {

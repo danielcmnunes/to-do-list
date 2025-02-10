@@ -15,7 +15,7 @@ class DetailsSchemas {
                 Joi.string()
                 .max(256)
                 .required()
-        });
+        }).label('Details Response');
     }
 
 
@@ -33,7 +33,7 @@ class DetailsSchemas {
                 Joi.string()
                 .max(64)
                 .optional()
-        });
+        }).label('Details Edit Request');
     }
 
     static editResponse(){
@@ -46,7 +46,7 @@ class DetailsSchemas {
                 Joi.string()
                 .max(256)
                 .required()
-        });
+        }).label('Details Edit Response');
     }
 }
 

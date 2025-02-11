@@ -19,13 +19,14 @@ function Register() {
     const [failMessage, setFailMessage] = useState(false);
     
     const SUCCESS_DURATION = 4000;
+    const MINIMUM_PASSWORD_SCORE = 2;
 
     const [passwordScore, setPasswordScore] = useState(0);
 
     const attemptRegister = async (e) => {
         e.preventDefault();
 
-        if(passwordScore < 4){
+        if(passwordScore < MINIMUM_PASSWORD_SCORE){
             setFailMessage('Please provide a stronger password.');
             return;
         }

@@ -12,35 +12,40 @@ class DatabaseWrapper {
     /**
      * To-do
      */
-    async add(payload){
+    async add(payload, username){
         const description = payload.description;
         try {
+            const user_id = await this.db('users')
+                .select('id')
+                .where({
+                    'username': username
+                }).first()
+
             const result = await this.db('items')
                 .insert({
+                    userId: user_id,
                     state: 'INCOMPLETE',
                     description: description, 
                     createdAt: this.db.fn.now(),
                     completedAt: null
                 }, this.formatted_response);
 
-            if(result.length === 1){
-                try {
-                    //convert to ISO8601 format
-                    const formatted_datetime = new Date(result[0].createdAt).toISOString();
-                    result[0].createdAt = formatted_datetime;
+            try {
+                //convert to ISO8601 format
+                const formatted_datetime = new Date(result[0].createdAt).toISOString();
+                result[0].createdAt = formatted_datetime;
 
-                    return result[0];
-                } catch (err) {
-                    console.error(err);
-                    return undefined;
-                }
-
-            } else {
-                return undefined;
+                return result[0];
+            } catch (err) {
+                console.error("could not format createdAt date");
+                console.error(err);
+                return { message: err };
             }
+
         } catch (err) {
+            console.error("Could not insert task");
             console.error(err);
-            return undefined;
+            return { message: err };
         }
     }
 

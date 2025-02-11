@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Button, Spinner, Form, FloatingLabel } from 'react-bootstrap';
 import '/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -19,6 +19,14 @@ function Login() {
     const [failMessage, setFailMessage] = useState(false);
 
     const SUCCESS_DURATION = 2000;
+
+    
+    useEffect(() => {
+        setUsername("daniel");
+        setPassword("UhIjbciLEjVS");
+        console.log("test: auto fill");
+    }, []);
+
 
     const attemptLogin = async (e) => {
         e.preventDefault();

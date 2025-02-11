@@ -22,6 +22,8 @@ function Details() {
     
     const [passwordScore, setPasswordScore] = useState(0);
 
+    const MINIMUM_PASSWORD_SCORE = 2;
+
     useEffect(() => {
         async function getDetails(){
             try {
@@ -65,7 +67,7 @@ function Details() {
             const payload = {};
 
             if(passwordInput !== ''){
-                if(passwordScore < 4){
+                if(passwordScore < MINIMUM_PASSWORD_SCORE){
                     setFailMessage('Please provide a stronger password.');
                     return;
                 }

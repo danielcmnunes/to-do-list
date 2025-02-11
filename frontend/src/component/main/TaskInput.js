@@ -30,8 +30,6 @@ function TaskInput() {
             const newItems = [...items, data];
             setContextList(newItems);
             setTextInput('');
-
-            console.log("TODO: implement feedback behavior")
             
         } catch(error){
             console.log("could not add task");
@@ -56,7 +54,7 @@ function TaskInput() {
                 </Form>
             </Col>
             <Col sm={5} md={3} lg={2} className="mx-0">
-                <Button className="w-100" variant="primary" type="submit">
+                <Button className="w-100" variant="primary" type="submit" onClick={handleSubmit}>
                     Create
                 </Button>
             </Col>

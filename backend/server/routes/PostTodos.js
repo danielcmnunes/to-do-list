@@ -14,7 +14,9 @@ function PostTodos(server){
                 strategy: 'todo_list_jwt_strategy'
             },
             handler: async (request, h) => {
-                const result = await server.db.add(request.payload);
+                const username = request.auth.credentials.username;
+
+                const result = await server.db.add(request.payload, username);
 
                 return result;
             },            

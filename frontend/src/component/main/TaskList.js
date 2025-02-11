@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import TaskItem from './TaskItem';
 import { TodoListContext } from '../context/TodoListContext.js';
@@ -6,9 +6,8 @@ import { TodoListDisplayContext } from '../context/TodoListDisplayContext.js';
 import { AuthContext } from '../context/AuthContext.js';
 
 function TaskList() {
-    const {hideCompleted, } = useContext(TodoListDisplayContext);
-    const {sortingOrder, } = useContext(TodoListDisplayContext);
-    const {items, setContextList} = useContext(TodoListContext);
+    const {hideCompleted, sortingOrder} = useContext(TodoListDisplayContext);
+    const {items, setContextList, setFailMessage} = useContext(TodoListContext);
     const {token} = useContext(AuthContext);
     
     useEffect(() => {
@@ -24,7 +23,11 @@ function TaskList() {
         
                 const data = await response.json();
 
-                setContextList(data);
+                if(data.message){
+                    setFailMessage("Could not add task.");
+                } else {
+                    setContextList(data);
+                }
             } catch(error){
                 console.log("could not fetch tasks");
                 console.log(error);

@@ -27,7 +27,7 @@ function PostTodos(server){
                 schema: TodoSchemas.postResponse(),
                 failAction: async function(request, h, err){
                     console.log(`failed post todos because: ${err}`);
-                    return h.response("Bad Request").code(400);
+                    return h.response({ message: "Bad Request"}).code(400);
                 }
             }
         }

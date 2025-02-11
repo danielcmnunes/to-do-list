@@ -5,7 +5,7 @@ import { AuthContext } from '../context/AuthContext.js';
 import ListSorting from './ListSorting.js';
 
 function TaskInput() {
-    const {items, setContextList} = useContext(TodoListContext);
+    const {items, setContextList, setFailMessage} = useContext(TodoListContext);
     const {token} = useContext(AuthContext);
 
     const [textInput, setTextInput] = useState('');
@@ -27,12 +27,18 @@ function TaskInput() {
             
             const data = await response.json();
 
+            if(!response.ok){
+                console.log("could not add task:");
+                console.log(response);
+                setFailMessage("Could not add task");
+                return;
+            }
+
             const newItems = [...items, data];
             setContextList(newItems);
             setTextInput('');
             
         } catch(error){
-            console.log("could not add task");
             console.log(error);
         }
     };

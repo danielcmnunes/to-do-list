@@ -15,7 +15,7 @@ class DatabaseWrapper {
     async add(payload, username){
         const description = payload.description;
         try {
-            const user_id = await this.db('users')
+            const result_user = await this.db('users')
                 .select('id')
                 .where({
                     'username': username
@@ -23,7 +23,7 @@ class DatabaseWrapper {
 
             const result = await this.db('items')
                 .insert({
-                    userId: user_id,
+                    userId: result_user.id,
                     state: 'INCOMPLETE',
                     description: description, 
                     createdAt: this.db.fn.now(),

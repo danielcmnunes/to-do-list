@@ -11,6 +11,7 @@ import TaskInput from './TaskInput.js';
 import TaskList from './TaskList.js';
 import ListFilter from './ListFilter.js';
 import Details from '../details/Details.js';
+import FeedbackMessage from '../util/FeedbackMessage.js';
 
 function MainScreen() {
     const [items, setItems] = useState([]);
@@ -18,6 +19,7 @@ function MainScreen() {
     const [sortingOrder, setSortingOrder] = useState('default');
     const {setToken, setLoggedIn} = useContext(AuthContext);
     const [showDetails, setShowDetails] = useState(false);
+    const [failMessage, setFailMessage] = useState('');    
 
     const logout = async () => {
         setLoggedIn(false);
@@ -32,7 +34,7 @@ function MainScreen() {
 
 
     return(
-    <TodoListContext.Provider value={{items, setContextList: setItems}}>
+    <TodoListContext.Provider value={{items, setContextList: setItems, failMessage, setFailMessage}}>
         <TodoListDisplayContext.Provider value={{hideCompleted, setHideCompleted, sortingOrder, setSortingOrder }}>
             <Container>
                 <Row className='d-flex justify-content-between my-3 ml-0 mr-0'>
@@ -60,6 +62,7 @@ function MainScreen() {
                     <Row className='mt-3'> <TaskInput/> </Row>
                     <Row className='mt-3'> <TaskList/> </Row>
                     <Row className='mt-3'> <ListFilter/></Row>
+                    <Row><FeedbackMessage variant="danger" message={failMessage} /></Row>
                 </>
                 }
             </Container>

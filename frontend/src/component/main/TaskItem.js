@@ -164,7 +164,8 @@ function TaskItem({id, state, description}) {
         <Row className='border-bottom mx-1'>
             <Col xs={1} className='d-table align-middle'>
                 <div className='d-table-cell align-middle'>
-                    <input type="checkbox" checked={isComplete === 'COMPLETE'} onChange={handleCheckboxClick}></input>
+                    <input type="checkbox" checked={isComplete === 'COMPLETE'} 
+                        onChange={handleCheckboxClick} className='todo-item-checkbox'></input>
                 </div>
             </Col>
             <Col sm={6} md={8} lg={9} className='d-table align-middle'>

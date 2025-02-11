@@ -38,35 +38,20 @@
 }
 
 .todo-item-checkbox {
-  input[type="checkbox"] {
-    transform: scale(3);
-  }
+  transform: scale(3);
 }
 
 .hide-completed-checkbox {
-  input[type="checkbox"] {
-    transform: scale(2);
-  }
+  transform: scale(2);
 }
 
 .theme-switcher {
-  input[type="checkbox"] {
-    transform: scale(1);
-  }
+  transform: scale(1);
 }
 
 .feedback-message {
-  /* padding: 10px;
-  background-color: #4caf50; */
-  /* color: white; */
-  /* text-align: center;
-  border-radius: 4px;
-  position: fixed;
-  top: 20px;
-  left: 50%; */
-  /* transform: translateX(-50%); */
   opacity: 0;
-  transition: opacity 0.4s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .feedback-fade-in {

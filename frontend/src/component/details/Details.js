@@ -140,7 +140,7 @@ function Details() {
                             onChange={(e) => setEmailInput(e.target.value)}
                         />
                     </FloatingLabel>
-                    <FloatingLabel controlId="passwordInput" label="Password" className="mb-3">
+                    <FloatingLabel controlId="passwordInput" label="New Password" className="mb-3">
                         <Form.Control required type="password" value={passwordInput} className="mb-3" disabled={!isEditing}
                             onChange={(e) => setPasswordInput(e.target.value)}
                         />
@@ -183,7 +183,7 @@ function Details() {
                 }
                 </Col>
             </Row>
-            <Row>
+            <Row className='justify-content-center'>
                 <Spinner className={isUpdating ? "d-block mt-3" : "d-none"} animation="border" variant="primary" />
                 <FeedbackMessage variant="success" message={successMessage}/>
                 <FeedbackMessage variant="warning" message={failMessage}/>

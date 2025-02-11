@@ -13,7 +13,7 @@ function DeleteTodo(server){
                 strategy: 'todo_list_jwt_strategy'
             },
             handler: async (request, h) => {
-                const result = await server.db.del(request.params);
+                const result = await server.db.delete_(request.params);
 
                 return result;
             },            

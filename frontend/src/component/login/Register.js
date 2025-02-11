@@ -27,7 +27,7 @@ function Register() {
         e.preventDefault();
 
         const usernameRegex = /^[a-zA-Z0-9]+$/;
-        if (!usernameRegex.test(value)) {
+        if (!usernameRegex.test(username_registration)) {
             setFailMessage('Username can only contain letters and numbers (no spaces or symbols).');
             return;
         } 
@@ -92,9 +92,11 @@ function Register() {
 
             <Button className='w-100 mb-3' type="submit">Register</Button>
 
-            <Spinner className={isRegistering ? "d-block mt-3" : "d-none"} animation="border" variant="primary" />
-            <FeedbackMessage variant="success" message={successMessage} duration={SUCCESS_DURATION}/>
-            <FeedbackMessage variant="warning" message={failMessage}/>
+            <Row className='justify-content-center'>
+                <Spinner className={isRegistering ? "d-block mt-3" : "d-none"} animation="border" variant="primary" />
+                <FeedbackMessage variant="success" message={successMessage} duration={SUCCESS_DURATION}/>
+                <FeedbackMessage variant="warning" message={failMessage}/>
+            </Row>
         </Form>
     </>
     );

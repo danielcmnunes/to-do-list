@@ -63,7 +63,7 @@ function MainScreen() {
                     <Row className='mt-3'> <TaskInput/> </Row>
                     <Row className='mt-3'> <TaskList/> </Row>
                     <Row className='mt-3'> <ListFilter/></Row>
-                    <Row><FeedbackMessage variant="danger" message={failMessage} /></Row>
+                    <Row><FeedbackMessage variant="danger" message={failMessage} duration={3000} /></Row>
                 </>
                 }
             </Container>

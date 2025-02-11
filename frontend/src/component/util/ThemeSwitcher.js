@@ -30,8 +30,8 @@ function ThemeSwitcher(){
     }
 
     return(
-        <Row className='mt-1'>
-            <Col xs={1}>
+        <Row className='mt-1 justify-content-left'>
+            <Col xs={2}>
                 <Form>
                     <Form.Check
                         checked={theme === 'dark'}

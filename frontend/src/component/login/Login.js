@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Spinner, Form, FloatingLabel } from 'react-bootstrap';
+import { Button, Spinner, Form, FloatingLabel, Row } from 'react-bootstrap';
 import '/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -78,9 +78,11 @@ function Login() {
             </FloatingLabel>
             <Button className='w-100 mb-3' type="submit">Login</Button>
 
-            <Spinner className={isLoggingIn ? "d-block my-3" : "d-none"} animation="border" variant="primary" />
-            <FeedbackMessage variant="success" message={successMessage} duration={SUCCESS_DURATION}/>
-            <FeedbackMessage variant="warning" message={failMessage}/>
+            <Row className='justify-content-center'>
+                <Spinner className={isLoggingIn ? "d-block my-3" : "d-none"} animation="border" variant="primary" />
+                <FeedbackMessage variant="success" message={successMessage} duration={SUCCESS_DURATION}/>
+                <FeedbackMessage variant="warning" message={failMessage} duration={SUCCESS_DURATION}/>
+            </Row>
         </Form>
     </>
     );

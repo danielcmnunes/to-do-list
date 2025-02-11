@@ -117,10 +117,10 @@ class DatabaseWrapper {
         }
     }
     
-    async del(id){
+    async delete_(params){
         try {
             const deleted = await this.db('items')
-                .where('id', id)
+                .where('id', params.id)
                 .del();
             return deleted;
         } catch (err) {

@@ -39,7 +39,7 @@ function TaskList() {
     useEffect( () => {
 
     }, [hideCompleted, sortingOrder]);
-  
+
     return (
         <Container>
             {

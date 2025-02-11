@@ -28,6 +28,7 @@ function MainScreen() {
 
     const handleSwitchDetails = () => {
         const newValue = !showDetails;
+        setFailMessage('');
         setShowDetails(newValue);
         console.log(showDetails);
     }

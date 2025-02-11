@@ -26,6 +26,12 @@ function Register() {
     const attemptRegister = async (e) => {
         e.preventDefault();
 
+        const usernameRegex = /^[a-zA-Z0-9]+$/;
+        if (!usernameRegex.test(value)) {
+            setFailMessage('Username can only contain letters and numbers (no spaces or symbols).');
+            return;
+        } 
+
         if(passwordScore < MINIMUM_PASSWORD_SCORE){
             setFailMessage('Please provide a stronger password.');
             return;

@@ -11,7 +11,7 @@ exports.up = function(knex) {
             table.string('description').notNullable();
             table.datetime('createdAt').notNullable();
             table.datetime('completedAt').defaultTo(null);
-            table.unique('description')
+            table.unique(['userId', 'description'])
         });
 };
 

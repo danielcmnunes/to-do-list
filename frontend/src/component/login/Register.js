@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { Row, Spinner, Form, FloatingLabel, Button } from 'react-bootstrap';
 import '/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -15,25 +15,32 @@ function Register() {
   
     const [isRegistering, setRegistering] = useState(false);
 
-    const [successMessage, setSuccessMessage] = useState('');
-    const [failMessage, setFailMessage] = useState(false);
+    const feedbackMessage = useRef(null);
     
     const SUCCESS_DURATION = 4000;
     const MINIMUM_PASSWORD_SCORE = 2;
+    const MINIMUM_PASSWORD_LENGTH = 8;
 
     const [passwordScore, setPasswordScore] = useState(0);
 
     const attemptRegister = async (e) => {
         e.preventDefault();
+        feedbackMessage.current.hide();
 
-        const usernameRegex = /^[a-zA-Z0-9]+$/;
+        if(password_registration.length < MINIMUM_PASSWORD_LENGTH){
+            feedbackMessage.current.show('warning', 'Password must be at least 8 characters long.');
+            return;
+        }
+
+        const usernameRegex = /^[a-zA-Z0-9\-_]+$/;
         if (!usernameRegex.test(username_registration)) {
-            setFailMessage('Username can only contain letters and numbers (no spaces or symbols).');
+
+            feedbackMessage.current.show('warning', 'Username can only contain letters and numbers (no spaces or symbols).');
             return;
         } 
 
         if(passwordScore < MINIMUM_PASSWORD_SCORE){
-            setFailMessage('Please provide a stronger password.');
+            feedbackMessage.current.show('warning', 'Please provide a stronger password.');
             return;
         }
         setRegistering(true);
@@ -53,7 +60,7 @@ function Register() {
             setToken(data.token);
 
             setRegistering(false);
-            setSuccessMessage('Registration completed! Logged in.');
+            feedbackMessage.current.show('success', 'Registration completed! Logged in.');
 
             setTimeout(() => {
                 setLoggedIn(true);
@@ -61,7 +68,7 @@ function Register() {
 
         } catch(error){
             setRegistering(false);
-            setFailMessage('Registration failed.');
+            feedbackMessage.current.show('warning', 'Registration failed.');
             console.log(error);
         }
     }   
@@ -87,15 +94,14 @@ function Register() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
             </FloatingLabel>
-            <PasswordStrengthBar password={password_registration} minLength={8} 
+            <PasswordStrengthBar password={password_registration} minLength={MINIMUM_PASSWORD_LENGTH} 
                 onChangeScore={(score) => { setPasswordScore(score); }}/>
 
             <Button className='w-100 mb-3' type="submit">Register</Button>
 
             <Row className='justify-content-center'>
                 <Spinner className={isRegistering ? "d-block mt-3" : "d-none"} animation="border" variant="primary" />
-                <FeedbackMessage variant="success" message={successMessage} duration={SUCCESS_DURATION}/>
-                <FeedbackMessage variant="warning" message={failMessage}/>
+                <FeedbackMessage ref={feedbackMessage} />
             </Row>
         </Form>
     </>

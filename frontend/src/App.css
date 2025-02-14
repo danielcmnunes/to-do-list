@@ -38,7 +38,7 @@
 }
 
 .todo-item-checkbox {
-  transform: scale(3);
+  transform: scale(2.8);
 }
 
 .hide-completed-checkbox {

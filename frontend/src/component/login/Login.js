@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { Button, Spinner, Form, FloatingLabel, Row } from 'react-bootstrap';
 import '/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -15,8 +15,7 @@ function Login() {
   
     const [isLoggingIn, setLoggingIn] = useState(false);
 
-    const [successMessage, setSuccessMessage] = useState('');
-    const [failMessage, setFailMessage] = useState(false);
+    const feedbackMessage = useRef(null);
 
     const SUCCESS_DURATION = 2000;
 
@@ -47,7 +46,8 @@ function Login() {
             if(data.token){
                 setLoggingIn(false);                
                 setToken(data.token);
-                setSuccessMessage('Logged in.');
+
+                feedbackMessage.current.show('success', 'Logged in.');
                 
                 setTimeout(() => {
                     setLoggedIn(true);
@@ -58,7 +58,8 @@ function Login() {
 
         } catch(error){
             setLoggingIn(false);
-            setFailMessage('Login failed.');
+
+            feedbackMessage.current.show('warning', 'Login failed.');
             console.log(error);
         }
     }
@@ -80,8 +81,7 @@ function Login() {
 
             <Row className='justify-content-center'>
                 <Spinner className={isLoggingIn ? "d-block my-3" : "d-none"} animation="border" variant="primary" />
-                <FeedbackMessage variant="success" message={successMessage} duration={SUCCESS_DURATION}/>
-                <FeedbackMessage variant="warning" message={failMessage} duration={SUCCESS_DURATION}/>
+                <FeedbackMessage ref={feedbackMessage} duration={SUCCESS_DURATION}/>
             </Row>
         </Form>
     </>

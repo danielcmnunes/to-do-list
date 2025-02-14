@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { Container, Row, Button, ButtonGroup } from 'react-bootstrap';
 
 import '/node_modules/bootstrap/dist/css/bootstrap.min.css';
@@ -19,7 +19,9 @@ function MainScreen() {
     const [sortingOrder, setSortingOrder] = useState('default');
     const {setToken, setLoggedIn} = useContext(AuthContext);
     const [showDetails, setShowDetails] = useState(false);
-    const [failMessage, setFailMessage] = useState('');    
+    const [failMessage, setFailMessage] = useState('');
+    
+    const feedbackMessage = useRef();
 
     const logout = async () => {
         setLoggedIn(false);
@@ -60,10 +62,13 @@ function MainScreen() {
                 </>
                 :                
                 <>
-                    <Row className='mt-3'> <TaskInput/> </Row>
+                    <Row className='mt-3'> <TaskInput feedback={feedbackMessage}/> </Row>
                     <Row className='mt-3'> <TaskList/> </Row>
                     <Row className='mt-3'> <ListFilter/></Row>
-                    <Row><FeedbackMessage variant="danger" message={failMessage} duration={3000} /></Row>
+                    <Row>
+                        <FeedbackMessage variant="danger" message={failMessage} duration={3000} />
+                        <FeedbackMessage ref={feedbackMessage}></FeedbackMessage>
+                    </Row>
                 </>
                 }
             </Container>

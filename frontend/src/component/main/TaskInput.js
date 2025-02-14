@@ -4,7 +4,7 @@ import {TodoListContext} from '../context/TodoListContext.js';
 import { AuthContext } from '../context/AuthContext.js';
 import ListSorting from './ListSorting.js';
 
-function TaskInput() {
+function TaskInput({ feedback }) {
     const {items, setContextList, setFailMessage} = useContext(TodoListContext);
     const {token} = useContext(AuthContext);
 
@@ -12,6 +12,11 @@ function TaskInput() {
   
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if(textInput.length === 0){
+            feedback.current.show("warning", "Please write the task you want to add.");
+            return;
+        }
 
         try {
             const response = await fetch("http://localhost:3001/todos", {
@@ -28,9 +33,11 @@ function TaskInput() {
             const data = await response.json();
 
             if(!response.ok){
-                console.log("could not add task:");
-                console.log(response);
-                setFailMessage("Could not add task");
+                try {
+                    feedback.current.show("warning", "Could not add task");
+                } catch (error) {
+                    console.log("could not show feedback message because:", error);
+                }
                 return;
             }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { Container, Row, Col, Button, Form, Spinner, FloatingLabel } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
 import FeedbackMessage from '../util/FeedbackMessage';
@@ -10,8 +10,7 @@ function Details() {
     const [isEditing, setEditing] = useState(false);
     const [isUpdating, setUpdating] = useState(false);
 
-    const [successMessage, setSuccessMessage] = useState('');
-    const [failMessage, setFailMessage] = useState('');
+    const feedbackMessage = useRef(null);
 
     const [email, setEmail] = useState('');
 
@@ -62,13 +61,16 @@ function Details() {
 
     const saveChanges = () => {
         setUpdating(true);
+        feedbackMessage.current.hide();
+
 
         async function sendUpdate(){
             const payload = {};
 
             if(passwordInput !== ''){
                 if(passwordScore < MINIMUM_PASSWORD_SCORE){
-                    setFailMessage('Please provide a stronger password.');
+                    setUpdating(false);
+                    feedbackMessage.current.show('warning', 'Please provide a stronger password.');
                     return;
                 }
 
@@ -76,7 +78,7 @@ function Details() {
                     payload.password = passwordInput;
                 } else {
                     setUpdating(false);
-                    setFailMessage('Confirmation password doesn\'t match new password.');
+                    feedbackMessage.current.show('warning', 'Confirmation password doesn\'t match new password.');
                     return;
                 }
             }
@@ -87,7 +89,7 @@ function Details() {
 
             if(Object.keys(payload).length === 0){
                 setUpdating(false);                
-                setFailMessage('Nothing to update.');                
+                feedbackMessage.current.show('secondary', 'Nothing to update.');
                 return;
             }
             
@@ -111,8 +113,7 @@ function Details() {
 
                 setEmail(data.email);
                 setEmailInput(data.email);
-
-                setSuccessMessage('Details edited succesfully!');
+                feedbackMessage.current.show('success', 'Details edited succesfully!');
                 
             } catch(error){
                 console.log("could not update task");
@@ -176,17 +177,16 @@ function Details() {
                 :
                     <Row>
                         <Col>
-                            <Button className='m-1 w-100' disabled={false } onClick={() => {enableEditing()}}>
+                            <Button className='w-100' disabled={false } onClick={() => {enableEditing()}}>
                                 <i className="bi bi-pencil-square"></i></Button>
                         </Col>
                     </Row>
                 }
                 </Col>
             </Row>
-            <Row className='justify-content-center'>
-                <Spinner className={isUpdating ? "d-block mt-3" : "d-none"} animation="border" variant="primary" />
-                <FeedbackMessage variant="success" message={successMessage}/>
-                <FeedbackMessage variant="warning" message={failMessage}/>
+            <Row className='mt-3 justify-content-center'>
+                <Spinner className={isUpdating ? "d-block" : "d-none"} animation="border" variant="primary" />
+                <FeedbackMessage ref={feedbackMessage} />
             </Row>
         </Container>
     );

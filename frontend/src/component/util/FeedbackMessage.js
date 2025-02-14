@@ -1,37 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { Alert } from 'react-bootstrap';
 
-
-function FeedbackMessage({variant, message, duration}){
+const FeedbackMessage = forwardRef( ({duration = 3000}, ref) =>{
     const [isOpen, setOpen] = useState(false);
+    const [message, setMessage] = useState(undefined);
+    const [variant, setVariant] = useState(undefined);
 
-    useEffect(() => {
-        console.log("message or duration changed:", message, duration);
-        if(message){
-            setOpen(true);
+    const show = (variant, message) => {
+        setVariant(variant);
+        setMessage(message);
+        setOpen(true);
 
-            let time_out = duration - 2000; // the transition takes 0.4s
-
-            if(time_out < 0){
-                time_out = duration;
-            }
-
-            console.log(duration, time_out);
-
-            const timerId = setTimeout(function(){
-                console.log("hide!!!");
-                setOpen(false);
-            }, duration);
-
-            return () => clearTimeout(timerId);
+        let timeout = duration - 500; //0.4s fade out
+        if(timeout < 0){
+            timeout = 1000;
         }
-    }, [message, duration]);
+
+        const timerId = setTimeout(() => {
+            console.log("hide!");
+            setOpen(false);
+        }, timeout);
+
+        return () => clearTimeout(timerId);
+    }
+
+    const hide = () => {
+        setOpen(false);
+    }
+
+    useImperativeHandle(ref, () => ({
+        show, hide
+    }));
 
     return(        
         <div className={'feedback-message ' + (isOpen ? 'feedback-fade-in' : 'feedback-fade-out')}>
             <Alert variant={variant}>{message}</Alert>
         </div>
     );
-};
+});
 
 export default FeedbackMessage;

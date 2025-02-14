@@ -156,11 +156,12 @@ class DatabaseWrapper {
                 .where({username: username})
                 .first();
 
-            const match = await bcrypt.compare(password, result.password);
-
-            if(match){
-                return {username: username};
-            }
+            if('password' in result){
+                const match = await bcrypt.compare(password, result.password);
+                if(match){
+                    return {username: username};
+                }
+            }                
 
             return {};
         } catch (err) {
